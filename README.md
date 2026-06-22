@@ -55,11 +55,62 @@ Color thresholds reacting to a real CPU/load spike — same script, same termina
 
 ![SysStat under load](screenshot2.png)
 
+```
+🐧 OS: Linux Mint 22.3 - ⚙️ Kernel version: 6.14.0-37-generic
+🏠 Hostname: hal9001c - 👤 User: axel
+🕒 Uptime: 5d 23:49:26 - 📅 Time and date: 09:29:35 15/06/26
+🎛️ CPU used: 50% (CPU0: 49% - CPU1: 50% - CPU2: 50% - CPU3: 50%)
+   ████████████████░░░░░░░░░░░░░░░░
+⚡ CPU frequency: 1.60GHz (CPU0,1,2,3) - 🎚️  Scaling governor: powersave
+   ████████████████░░░░░░░░░░░░░░░░
+🌡️ CPU temperature: 39°C
+📟 RAM used: 49% (7.57GB/15.49GB) - 💾 Swap used: 0% (0.00GB/0.00GB)
+   ███████████████▒▒▒▒▒▒▒▒▒▒▒▒▒░░░░ - ░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░
+📋 Processes: 296 (run=1, sleep=230, idle=65, stop=0, zombie=0)
+📊 Load average: 1.25 1.10 1.05
+🗄️ Disk used: 55% (258.92GB/467.91GB) - 📥 R: 0.00MB/s - 📤 W: 0.17MB/s
+   █████████████████░░░░░░░░░░░░░░░
+🌡️ Disk temperature: 33°C
+🌐 LAN IP: 192.168.0.117 - Spd: 100Mb/s(F) - ⬇️ D: 0.00MB/s - ⬆️ U: 0.00MB/s
+🗼 WiFi IP: 192.168.0.208 - SSID: OBRIEN 5
+📶 WiFi signal: 52% - Speed: 117.00Mb/s - ⬇️ D: 0.01MB/s - ⬆️ U: 0.00MB/s
+   ████████████████░░░░░░░░░░░░░░░░
+🌡️ WiFi temperature: 45°C
+🔁 Run: 01:08:56 (58ms) | Cycles: 411 | 18.55MB | Next: 4/10s
+```
+
 ### 📊 Final report
 
 When the script exits, it prints a min/avg/max summary for the whole session and lets you save it as `.txt` or `.log`:
 
 ![SysStat final report](screenshot3.png)
+
+```
+SysStat CLI/GUI v5.32.0.20260617a
+🐧 OS: Linux Mint 22.3 - ⚙️  Kernel version: 7.0.0-14-generic
+🏠 Hostname: hal9001c - 👤 User: axel
+🕒 Start: 20:27:26 17/06/26 - 📅 End: 22:42:30 17/06/26 - 🔄 Cycles: 807
+                Min           Avg           Max
+🎛️ CPU used:    5%            21%           79%
+⚡ CPU freq:    0.70GHz       1.34GHz       3.11GHz
+🌡️ CPU temp:    32°C          39°C          62°C
+📟 RAM used:    48%           50%           68%
+                7.37GB        7.72GB        10.50GB
+💾 Swap used:   0%            0%            0%
+                0.00GB        0.00GB        0.00GB
+📋 Processes:   296           301           310
+📊 Load avg:    0.03          1.13          4.88
+🗄️ Disk used:   55%           55%           55%
+                259.24GB      259.28GB      259.33GB
+📥 Disk read:   0.00MB/s      0.04MB/s      13.85MB/s
+📤 Disk write:  0.00MB/s      0.24MB/s      6.23MB/s
+🌡️ Disk temp:   31°C          32°C          36°C
+📶 WiFi signal: 52%           57%           64%
+   WiFi speed:  97.60Mb/s     202.99Mb/s    260.00Mb/s
+⬇️ WiFi down:   0.00MB/s      0.08MB/s      1.30MB/s
+⬆️ WiFi up:     0.00MB/s      0.00MB/s      0.08MB/s
+🌡️ WiFi temp:   30°C          40°C          47°C
+```
 
 ### Installation
 
@@ -214,11 +265,62 @@ Los umbrales de color reaccionando a un pico real de CPU/carga — mismo script,
 
 ![SysStat bajo carga](screenshot2.png)
 
+```
+🐧 OS: Linux Mint 22.3 - ⚙️ Kernel version: 6.14.0-37-generic
+🏠 Hostname: hal9001c - 👤 User: axel
+🕒 Uptime: 5d 23:49:26 - 📅 Time and date: 09:29:35 15/06/26
+🎛️ CPU used: 50% (CPU0: 49% - CPU1: 50% - CPU2: 50% - CPU3: 50%)
+   ████████████████░░░░░░░░░░░░░░░░
+⚡ CPU frequency: 1.60GHz (CPU0,1,2,3) - 🎚️  Scaling governor: powersave
+   ████████████████░░░░░░░░░░░░░░░░
+🌡️ CPU temperature: 39°C
+📟 RAM used: 49% (7.57GB/15.49GB) - 💾 Swap used: 0% (0.00GB/0.00GB)
+   ███████████████▒▒▒▒▒▒▒▒▒▒▒▒▒░░░░ - ░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░
+📋 Processes: 296 (run=1, sleep=230, idle=65, stop=0, zombie=0)
+📊 Load average: 1.25 1.10 1.05
+🗄️ Disk used: 55% (258.92GB/467.91GB) - 📥 R: 0.00MB/s - 📤 W: 0.17MB/s
+   █████████████████░░░░░░░░░░░░░░░
+🌡️ Disk temperature: 33°C
+🌐 LAN IP: 192.168.0.117 - Spd: 100Mb/s(F) - ⬇️ D: 0.00MB/s - ⬆️ U: 0.00MB/s
+🗼 WiFi IP: 192.168.0.208 - SSID: OBRIEN 5
+📶 WiFi signal: 52% - Speed: 117.00Mb/s - ⬇️ D: 0.01MB/s - ⬆️ U: 0.00MB/s
+   ████████████████░░░░░░░░░░░░░░░░
+🌡️ WiFi temperature: 45°C
+🔁 Run: 01:08:56 (58ms) | Cycles: 411 | 18.55MB | Next: 4/10s
+```
+
 ### 📊 Informe final
 
 Al salir del script, imprime un resumen min/avg/max de toda la sesión y te deja guardarlo como `.txt` o `.log`:
 
 ![SysStat informe final](screenshot3.png)
+
+```
+SysStat CLI/GUI v5.32.0.20260617a
+🐧 OS: Linux Mint 22.3 - ⚙️  Kernel version: 7.0.0-14-generic
+🏠 Hostname: hal9001c - 👤 User: axel
+🕒 Start: 20:27:26 17/06/26 - 📅 End: 22:42:30 17/06/26 - 🔄 Cycles: 807
+                Min           Avg           Max
+🎛️ CPU used:    5%            21%           79%
+⚡ CPU freq:    0.70GHz       1.34GHz       3.11GHz
+🌡️ CPU temp:    32°C          39°C          62°C
+📟 RAM used:    48%           50%           68%
+                7.37GB        7.72GB        10.50GB
+💾 Swap used:   0%            0%            0%
+                0.00GB        0.00GB        0.00GB
+📋 Processes:   296           301           310
+📊 Load avg:    0.03          1.13          4.88
+🗄️ Disk used:   55%           55%           55%
+                259.24GB      259.28GB      259.33GB
+📥 Disk read:   0.00MB/s      0.04MB/s      13.85MB/s
+📤 Disk write:  0.00MB/s      0.24MB/s      6.23MB/s
+🌡️ Disk temp:   31°C          32°C          36°C
+📶 WiFi signal: 52%           57%           64%
+   WiFi speed:  97.60Mb/s     202.99Mb/s    260.00Mb/s
+⬇️ WiFi down:   0.00MB/s      0.08MB/s      1.30MB/s
+⬆️ WiFi up:     0.00MB/s      0.00MB/s      0.08MB/s
+🌡️ WiFi temp:   30°C          40°C          47°C
+```
 
 ### Instalación
 
