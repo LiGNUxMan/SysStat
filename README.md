@@ -49,6 +49,18 @@ Files communicate **only** through `sysstat_core`'s public API (`get()`, `get_st
 - **Final report**: on exit, shows min/avg/max for every tracked metric; press **T** to save as `.txt` (clean) or **L** to save as `.log` (with ANSI colors).
 - **Icon-free mode**: for terminals without Unicode/emoji support (auto-detected).
 
+### 📸 Under load
+
+Color thresholds reacting to a real CPU/load spike — same script, same terminal:
+
+![SysStat under load](screenshot2.png)
+
+### 📊 Final report
+
+When the script exits, it prints a min/avg/max summary for the whole session and lets you save it as `.txt` or `.log`:
+
+![SysStat final report](screenshot3.png)
+
 ### Installation
 
 **Requirements:**
@@ -195,6 +207,18 @@ Los archivos se comunican **únicamente** a través de la API pública de `sysst
 - **Modo bucle**: ejecuta cada N segundos, indefinidamente o por una cantidad fija de ciclos (`-N`).
 - **Informe final**: al salir, muestra min/avg/max de cada métrica registrada; presioná **T** para guardar como `.txt` (limpio) o **L** para guardar como `.log` (con colores ANSI).
 - **Modo sin íconos**: para terminales sin soporte Unicode/emoji (detección automática).
+
+### 📸 Bajo carga
+
+Los umbrales de color reaccionando a un pico real de CPU/carga — mismo script, misma terminal:
+
+![SysStat bajo carga](screenshot2.png)
+
+### 📊 Informe final
+
+Al salir del script, imprime un resumen min/avg/max de toda la sesión y te deja guardarlo como `.txt` o `.log`:
+
+![SysStat informe final](screenshot3.png)
 
 ### Instalación
 
