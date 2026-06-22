@@ -101,7 +101,7 @@ python3 sysstat.py [interval] [-cycles] [options]
 | Disk       | `-d`, `-disk`            | Skip disk usage/temperature           |
 | LAN        | `-a`, `-lan`             | Skip wired network                    |
 | WiFi       | `-w`, `-wifi`            | Skip WiFi                             |
-| Battery    | `-t`, `-bat`             | Skip battery *(pending GUI port)*     |
+| Battery    | `-t`, `-bat`             | Skip battery *(not available yet)*    |
 | Bars       | `-b`, `-bar`             | Hide **all** progress bars            |
 |            | `-bc`, `-barc`           | Hide CPU usage bar                    |
 |            | `-bf`, `-barf`           | Hide CPU frequency bar                |
@@ -110,7 +110,7 @@ python3 sysstat.py [interval] [-cycles] [options]
 |            | `-bw`, `-barw`           | Hide WiFi bar                         |
 |            | `-bt`, `-bart`           | Hide Battery bar                      |
 | Icons      | `-i`, `-icon`            | Hide decorative icons                 |
-| GUI        | `-g`, `-gui`             | Start in graphical mode               |
+| GUI        | `-g`, `-gui`             | Start in graphical mode *(not available yet)* |
 | Help       | `-h`, `-help`, `--help`  | Show help and exit                    |
 
 #### Examples
@@ -260,7 +260,7 @@ python3 sysstat.py [intervalo] [-ciclos] [opciones]
 | Disco      | `-d`, `-disk`            | Omite uso/temperatura del disco         |
 | LAN        | `-a`, `-lan`             | Omite red cableada                      |
 | WiFi       | `-w`, `-wifi`            | Omite WiFi                             |
-| Batería    | `-t`, `-bat`             | Omite batería *(pendiente en GUI)*      |
+| Batería    | `-t`, `-bat`             | Omite batería *(no disponible aún)*     |
 | Barras     | `-b`, `-bar`             | Oculta **todas** las barras             |
 |            | `-bc`, `-barc`           | Oculta barra de uso de CPU              |
 |            | `-bf`, `-barf`           | Oculta barra de frecuencia de CPU       |
@@ -269,7 +269,7 @@ python3 sysstat.py [intervalo] [-ciclos] [opciones]
 |            | `-bw`, `-barw`           | Oculta barra de WiFi                    |
 |            | `-bt`, `-bart`           | Oculta barra de Batería                 |
 | Íconos     | `-i`, `-icon`            | Oculta íconos decorativos               |
-| GUI        | `-g`, `-gui`             | Arranca en modo gráfico                 |
+| GUI        | `-g`, `-gui`             | Arranca en modo gráfico *(no disponible aún)* |
 | Ayuda      | `-h`, `-help`, `--help`  | Muestra la ayuda y sale                 |
 
 #### Ejemplos
