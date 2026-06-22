@@ -3,7 +3,9 @@
 ![License](https://img.shields.io/badge/License-GPLv3-green?style=flat-square)
 ![Version](https://img.shields.io/badge/Version-5.39.0-orange?style=flat-square)
 
-# SysStat (System Status) CLI/GUI
+# SysStat (System Status) CLI/GUI v5.43.0.20260622a
+
+![SysStat CLI](screenshot1.png)
 
 ## 🇺🇸🇬🇧 English
 
@@ -149,6 +151,8 @@ Distributed under **GPLv3**. Use it, modify it, share it.
 > Made with 💚 and a passion for free software.
 
 ---
+
+![SysStat CLI](screenshot1.png)
 
 ## 🇪🇸 Español
 
