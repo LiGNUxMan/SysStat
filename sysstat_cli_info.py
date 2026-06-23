@@ -4,16 +4,17 @@
 # 
 # Autor: Axel O'BRIEN (LiGNUxMan) axelobrien@gmail.com
 # 
-# Colaboradores: OpenIA - ChatGPT / Google - Antigravity & Gemini / Anthropic Claude
+# Colaboradores: ChatGPT (OpenAI) · Gemini/Antigravity (Google) · Claude (Anthropic)
 #
 # =======================================
 # sysstat_cli_info.py - INFORME FINAL CLI
 # =======================================
 #
-# Version: 047
+# Version: 049
 #
 # =======================================
 
+import importlib.util
 import json
 import os
 import re
@@ -33,11 +34,7 @@ COL_VAL = 13 #Separacion entre columnas min / avg / max
 #REPORTS_DIR = os.path.expanduser("~/sysstat_reports")
 REPORTS_DIR = os.path.join(os.path.dirname(os.path.abspath(__file__)), "sysstat_reports")
 _ANSI_RE = re.compile(r"\033\[[0-9;]*m")
-
-# Emojis con variation selector (\uFE0F) que la mayoría de fuentes monoespaciadas
-# rinden angostos — en pantalla se compensan con doble espacio, pero en un editor
-# de texto normal (TXT) ese doble espacio se ve corrido. Se les saca el extra.
-_WIDE_EMOJI_RE = re.compile(r"([⚙️⏱️🎛️🎚️🌡️🗄️⬇️⬆️])  ")
+_PDF_AVAILABLE = importlib.util.find_spec("fpdf") is not None  # ← chequeo sin importar fpdf2 todavía
 
 # =============================================================
 # 1.0 — HELPERS DE FORMATO Y ENTORNO
@@ -121,7 +118,7 @@ def show_report(config):
         loop      = "🔄 " if config.icon else ""
 
     if config.cpu:
-        robot     = "🔲 " if config.icon else "" # Alternativas 🤖 🎛️ 🔲
+        robot     = "🔲  " if config.icon else "" # Alternativas 🤖 🎛️ 🔲
         lightning = "⚡ " if config.icon else "" # Alternatica ⚡ 🚀
         thermcpu  = "🌡️  " if config.icon else ""
 
@@ -158,16 +155,16 @@ def show_report(config):
 
     # ── Sistema ───────────────────────────────────────────────
     # 🐧 OS: Linux Mint 22.3 - ⚙️  Kernel version: 7.0.0-14-generic
-    # 🏠 Hostname: hal9001c - 👤 User: axel
-    # 🕒 Start: 19:26:40 15/06/26 - 📅 End: 19:58:11 15/06/26 - 🔄 Cycles: 189
     if config.sys:
         d = sysstat_core.get("sys")
         buffer.append(f"{penguin}OS: {BOLD}{d['os_name']}{RESET} - {gear}Kernel version: {BOLD}{d['kernel_version']}{RESET}")
 
+    # 🏠 Hostname: hal9001c - 👤 User: axel
     if config.host:
         d = sysstat_core.get("host")
         buffer.append(f"{house}Hostname: {BOLD}{d['hostname']}{RESET} - {person}User: {BOLD}{d['user']}{RESET}")
 
+    # 🕒 Start: 19:26:40 15/06/26 - 📅 End: 19:58:11 15/06/26 - 🔄 Cycles: 189
     if config.up:
         up       = sysstat_core.get("up")
         start_dt = sysstat_core.get("start_datetime")
@@ -176,13 +173,13 @@ def show_report(config):
         buffer.append(f"{stopwatch}Runtime: {BOLD}{sysstat_core.get_runtime()}{RESET} - {loop}Cycles: {BOLD}{cycles}{RESET}")
 
     # ── Cabecera de columnas ──────────────────────────────────
-    #                 Min       Avg       Max
+    #                 Min           Avg           Max
     buffer.append(f"{ghost_icon}{DIM}{'Min':<{COL_VAL}} {'Avg':<{COL_VAL}} {'Max':<{COL_VAL}}{RESET}")
 
     # ── CPU ───────────────────────────────────────────────────
-    # 🔲 CPU used:    2%            32%           66%
-    # ⚡ CPU freq:    0.74GHz       1.09GHz       3.10GHz
-    # 🌡️ CPU temp:    28°C          38°C          57°C
+    # 🔲 CPU used:    5%            21%           79%
+    # ⚡ CPU freq:    0.70GHz       1.34GHz       3.11GHz
+    # 🌡️ CPU temp:    32°C          39°C          62°C
     if config.cpu:
         cpu_s   = sysstat_core.get_stats("cpu")
         cpu_avg = round(cpu_s["avg"])
@@ -210,8 +207,8 @@ def show_report(config):
             )
 
     # ── RAM / Swap ────────────────────────────────────────────
-    # 📟 RAM used:    41%           43%           47%
-    #                 6.36GB        6.63GB        7.24GB
+    # 📟 RAM used:    48%           50%           68%
+    #                 7.37GB        7.72GB        10.50GB00
     # 💾 Swap used:   0%            0%            0%
     #                 0.00GB        0.00GB        0.00GB
     if config.ram:
@@ -244,7 +241,7 @@ def show_report(config):
         )
 
     # ── Processes ─────────────────────────────────────────────
-    # 📋 Processes:   299           306           374
+    # 📋 Processes:   296           301           310
     if config.proc:
         proc_s = sysstat_core.get_stats("proc")
         buffer.append(f"{puzzle}{f'Processes:':<{COL_LABEL}}"
@@ -254,7 +251,7 @@ def show_report(config):
         )
 
     # ── Load average ──────────────────────────────────────────
-    # 📊 Load avg:    0.04          2.12          5.53
+    # 📊 Load avg:    0.03          1.13          4.88
     if config.load:
         load_s = sysstat_core.get_stats("load")
         def _load_fmt(v): return f"{v:.2f}"
@@ -266,10 +263,10 @@ def show_report(config):
 
     # ── Disk ──────────────────────────────────────────────────
     # 🗄️ Disk used:   55%           55%           55%
-    #                 257.48GB      257.52GB      257.55GB
-    # 📥 Disk read:   0.00MB/s      0.01MB/s      2.19MB/s
-    # 📤 Disk write:  0.00MB/s      0.31MB/s      11.91MB/s
-    # 🌡️ Disk temp:   29°C          31°C          34°C
+    #                 259.24GB      259.28GB      259.33GB
+    # 📥 Disk read:   0.00MB/s      0.04MB/s      13.85MB/s
+    # 📤 Disk write:  0.00MB/s      0.24MB/s      6.23MB/s
+    # 🌡️ Disk temp:   31°C          32°C          36°C
     if config.disk:
         disk_s    = sysstat_core.get_stats("disk")
         disk_kb_s = sysstat_core.get_stats("disk_kb")
@@ -309,6 +306,7 @@ def show_report(config):
             )
 
     # ── LAN ───────────────────────────────────────────────────
+    # 
     if config.lan and sysstat_core.get_count("lan_speed") > 0:
         speed_s = sysstat_core.get_stats("lan_speed")
         buffer.append(f"{lan_icon}{f'Lan speed:':<{COL_LABEL}}"
@@ -332,11 +330,11 @@ def show_report(config):
         )
 
     # ── WiFi ──────────────────────────────────────────────────
-    # 📶 WiFi signal: 48%           56%           60%          
-    #    WiFi speed:  117.00Mb/s    217.41Mb/s    263.30Mb/s   
-    # ⬇️ WiFi down:   0.00MB/s      0.07MB/s      2.57MB/s     
-    # ⬆️ WiFi up:     0.00MB/s      0.00MB/s      0.06MB/s     
-    # 🌡️ WiFi temp:   32°C          38°C          44°C
+    # 📶 WiFi signal: 52%           57%           64%
+    #    WiFi speed:  97.60Mb/s     202.99Mb/s    260.00Mb/s
+    # ⬇️ WiFi down:   0.00MB/s      0.08MB/s      1.30MB/s
+    # ⬆️ WiFi up:     0.00MB/s      0.00MB/s      0.08MB/s
+    # 🌡️ WiFi temp:   30°C          40°C          47°C
     if config.wifi and sysstat_core.get_count("wifi") > 0:
         wifi_s = sysstat_core.get_stats("wifi")
         buffer.append(f"{wifi_icon}{f'WiFi signal:':<{COL_LABEL}}"
@@ -379,7 +377,8 @@ def show_report(config):
     print("\n".join(buffer))
 
     # ── Barra de acciones finales — Salir / Guardar TXT / Guardar LOG ─────
-    bar_text = f"{icon_bar}{REVERSE}{DIM}(Q/X) Exit | (T) Save TXT | (L) Save LOG{RESET}"
+    pdf_hint = " | (P) Save PDF" if _PDF_AVAILABLE else ""
+    bar_text = f"{icon_bar}{REVERSE}{DIM}(Q/X) Exit | (T) Save TXT | (L) Save LOG{pdf_hint}{RESET}"
     sys.stdout.write(bar_text)
     sys.stdout.flush()
     _wait_final_keypress(buffer)
@@ -398,12 +397,6 @@ def _strip_ansi(text: str) -> str:
     """Remueve todos los códigos de color/estilo ANSI — usado para el TXT limpio."""
     return _ANSI_RE.sub("", text)
 
-def _fix_wide_emoji(text: str) -> str:
-    """Saca el espacio extra que compensa el ancho variable de ciertos emojis (VS16).
-    En pantalla ese espacio doble alinea bien, pero en un editor de texto normal
-    queda corrido — solo se aplica al TXT, nunca al LOG ni a la pantalla."""
-    return _WIDE_EMOJI_RE.sub(r"\1 ", text)
-
 def _save_file(buffer, extension: str, strip_colors: bool):
     """Vuelca el buffer de líneas a un archivo en REPORTS_DIR.
     El nombre usa la hora de ARRANQUE del script (no la de guardado) — representa
@@ -413,12 +406,28 @@ def _save_file(buffer, extension: str, strip_colors: bool):
         timestamp = sysstat_core.get_start_timestamp()
         filename  = f"sysstat_{timestamp}.{extension}"
         filepath  = os.path.join(REPORTS_DIR, filename)
-        if strip_colors:
-            content = "\n".join(_fix_wide_emoji(_strip_ansi(l)) for l in buffer)
-        else:
-            content = "\n".join(buffer)
+        content   = "\n".join(_strip_ansi(l) if strip_colors else l for l in buffer)
         with open(filepath, "w", encoding="utf-8") as f:
             f.write(content + "\n")
+        return filepath
+    except Exception:
+        return None
+
+def _save_pdf(buffer):
+    """Vuelca el buffer a PDF via fpdf2. Sin emojis — fuentes core son Latin-1."""
+    try:
+        from fpdf import FPDF
+        os.makedirs(REPORTS_DIR, exist_ok=True)
+        timestamp = sysstat_core.get_start_timestamp()
+        filename  = f"sysstat_{timestamp}.pdf"
+        filepath  = os.path.join(REPORTS_DIR, filename)
+        pdf = FPDF()
+        pdf.add_page()
+        pdf.set_font("Courier", size=10)
+        for line in buffer:
+            clean = _strip_ansi(line).encode("latin-1", errors="ignore").decode("latin-1")
+            pdf.cell(0, 5, text=clean, new_x="LMARGIN", new_y="NEXT")
+        pdf.output(filepath)
         return filepath
     except Exception:
         return None
@@ -440,11 +449,15 @@ def _wait_final_keypress(buffer):
                 break
             elif key == "t":
                 saved_path = _save_file(buffer, "txt", strip_colors=True)
-                sys.stdout.write(f"\nSave: {saved_path}")
+                sys.stdout.write(f"\nView: cat {saved_path}")
                 break
             elif key == "l":
                 saved_path = _save_file(buffer, "log", strip_colors=False)
-                sys.stdout.write(f"\nSave: {saved_path}")
+                sys.stdout.write(f"\nView: cat {saved_path}")
+                break
+            elif key == "p" and _PDF_AVAILABLE:
+                saved_path = _save_pdf(buffer)
+                sys.stdout.write(f"\nView: xdg-open {saved_path}" if saved_path else "\nError: no se pudo generar el PDF")
                 break
     finally:
         termios.tcsetattr(fd, termios.TCSADRAIN, old_settings)

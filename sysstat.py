@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 # 
-# SysStat (System Status)
+# SysStat (System Status) - MAIN
 # 
 # Autor: Axel O'BRIEN (LiGNUxMan) axelobrien@gmail.com
 # 
@@ -12,7 +12,7 @@
 # sysstat.py - ORQUESTADOR PRINCIPAL, PARSEADOR
 # =============================================
 #
-# Version: 013
+# Version: 014
 #
 # =============================================
 
@@ -23,7 +23,7 @@ import argparse
 sys.dont_write_bytecode = True  # Evita __pycache__. Sacar esta línea si algún día se compila para version estable.
 
 # Convención estándar de Python para la versión del programa
-__version__ = "5.43.0.20260622a"
+__version__ = "5.43.0.20260622b"
 
 # MODIFICADORES DE TEXTO ANSI (Para la estructura de la ayuda)
 RESET     = "\033[0m"
