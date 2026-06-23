@@ -12,7 +12,7 @@
 # sysstat.py - ORQUESTADOR PRINCIPAL, PARSEADOR
 # =============================================
 #
-# Version: 014
+# Version: 015
 #
 # =============================================
 
@@ -80,7 +80,7 @@ def parse_arguments():
     parser = argparse.ArgumentParser(
         usage=argparse.SUPPRESS,
         description=f"{BOLD}SysStat CLI/GUI{RESET} (System Status) - Version {__version__}\n\n"
-                    f"{BOLD}Repositorio:{RESET} {UNDERLINE}https://github.com/LiGNUxMan/SysStatCLI{RESET}\n\n"
+                    f"{BOLD}Repositorio:{RESET} {UNDERLINE}https://github.com/LiGNUxMan/SysStat{RESET}\n\n"
                     f"{BOLD}Autor:{RESET} Axel O'BRIEN ({ITALIC}LiGNUxMan{RESET}) · {UNDERLINE}axelobrien@gmail.com{RESET}\n"
                     f"{BOLD}Colaboradores:{RESET} OpenIA ChatGPT / Google - Antigravity & Gemini / Anthropic Claude\n\n"
                     f"{BOLD}Uso:{RESET} ./sysstat.py [intervalo] [-ciclos] [opciones]\n"
