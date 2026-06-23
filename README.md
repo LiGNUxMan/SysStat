@@ -3,7 +3,7 @@
 ![License](https://img.shields.io/badge/License-GPLv3-green?style=flat-square)
 ![Version](https://img.shields.io/badge/Version-5.39.0-orange?style=flat-square)
 
-# SysStat (System Status) CLI/GUI v5.43.0.20260622a
+# SysStat (System Status) CLI/GUI v5.43.0.20260622b
 
 ![SysStat CLI](screenshot1.png)
 
