@@ -118,7 +118,7 @@ def show_report(config):
         loop      = "🔄 " if config.icon else ""
 
     if config.cpu:
-        robot     = "🔲  " if config.icon else "" # Alternativas 🤖 🎛️ 🔲
+        robot     = "🔲 " if config.icon else "" # Alternativas 🤖 🎛️ 🔲
         lightning = "⚡ " if config.icon else "" # Alternatica ⚡ 🚀
         thermcpu  = "🌡️  " if config.icon else ""
 
@@ -377,6 +377,7 @@ def show_report(config):
     print("\n".join(buffer))
 
     # ── Barra de acciones finales — Salir / Guardar TXT / Guardar LOG ─────
+    # Para habilitar la opcion "(P) Save PDF" instalar la libreria fpdf2: "pip install fpdf2 --break-system-packages"
     pdf_hint = " | (P) Save PDF" if _PDF_AVAILABLE else ""
     bar_text = f"{icon_bar}{REVERSE}{DIM}(Q/X) Exit | (T) Save TXT | (L) Save LOG{pdf_hint}{RESET}"
     sys.stdout.write(bar_text)
