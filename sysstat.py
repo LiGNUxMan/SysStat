@@ -23,7 +23,7 @@ import argparse
 sys.dont_write_bytecode = True  # Evita __pycache__. Sacar esta línea si algún día se compila para version estable.
 
 # Convención estándar de Python para la versión del programa
-__version__ = "5.43.0.20260622b"
+__version__ = "5.43.0.20260624a"
 
 # MODIFICADORES DE TEXTO ANSI (Para la estructura de la ayuda)
 RESET     = "\033[0m"

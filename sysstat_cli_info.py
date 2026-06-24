@@ -10,7 +10,7 @@
 # sysstat_cli_info.py - INFORME FINAL CLI
 # =======================================
 #
-# Version: 049
+# Version: 055
 #
 # =======================================
 
@@ -30,11 +30,40 @@ REVERSE = "\033[7m"
 
 COL_LABEL = 13 #Distancia del borde a Mim
 COL_VAL = 13 #Separacion entre columnas min / avg / max
+ICON_ZONE_WIDTH = 3 #Ancho de la "zona de ícono" en columnas (con o sin ícono real) — ghost_icon/icon_pad/icon_bar usan "   "
 
 #REPORTS_DIR = os.path.expanduser("~/sysstat_reports")
 REPORTS_DIR = os.path.join(os.path.dirname(os.path.abspath(__file__)), "sysstat_reports")
-_ANSI_RE = re.compile(r"\033\[[0-9;]*m")
+_ANSI_RE       = re.compile(r"\033\[[0-9;]*m")
+_ANSI_SPLIT_RE = re.compile(r"(\033\[[0-9;]*m)")  # ← misma regex, pero con grupo, para partir y conservar los códigos
 _PDF_AVAILABLE = importlib.util.find_spec("fpdf") is not None  # ← chequeo sin importar fpdf2 todavía
+
+# Regex de emojis por RANGO Unicode — cubre íconos actuales y futuros sin
+# necesidad de listarlos uno por uno. El "\s*" final es la clave de la
+# alineación: se come TODOS los espacios que el ícono dejaba reservados a
+# su alrededor (1, 2 o los que sea), así el PDF no depende del ancho
+# particular de cada ícono — sin tocar líneas "fantasma" que no tienen
+# ningún emoji (esas mantienen su indentación intacta, tal cual vienen).
+_EMOJI_RE = re.compile(
+    "["
+    "\U0001F1E6-\U0001F1FF"  # banderas (regional indicators)
+    "\U0001F300-\U0001FAFF"  # pictogramas, emoticones, transporte, símbolos suplementarios
+    "\U00002600-\U000027BF"  # símbolos varios y dingbats (⚙️ ⚡ etc.)
+    "\U00002300-\U000023FF"  # técnico misceláneo (⏱️ ⌚ etc.)
+    "\U00002B00-\U00002BFF"  # flechas y símbolos varios (⬆️ ⬇️ etc.)
+    "\U0000FE00-\U0000FE0F"  # variation selectors
+    "\U0000200D"             # zero width joiner
+    "]+\\s*"
+)
+
+# Mapa de código ANSI → RGB. BOLD/RESET se manejan aparte (no son color).
+_ANSI_COLOR_MAP = {
+    "\033[31m":       (200, 30, 30),    # RED
+    "\033[93m":       (170, 130, 0),    # YELLOW (oscurecido para fondo blanco)
+    "\033[38;5;208m": (230, 120, 0),    # ORANGE
+    "\033[2m":        (130, 130, 130),  # DIM (gris)
+}
+_PDF_BLACK = (0, 0, 0)
 
 # =============================================================
 # 1.0 — HELPERS DE FORMATO Y ENTORNO
@@ -102,6 +131,10 @@ def show_report(config):
     ghost_icon = "   " + " " * COL_LABEL if config.icon else " " * COL_LABEL
     icon_pad   = "   " if config.icon else ""
     icon_bar   = "   " if config.icon else ""
+    icon_exit  = "🚪 " if config.icon else ""
+    icon_txt   = "📝 " if config.icon else ""
+    icon_log   = "📜 " if config.icon else ""
+    icon_pdf   = "📄 " if config.icon else ""
 
     if config.sys:
         penguin = "🐧 " if config.icon else ""
@@ -376,13 +409,14 @@ def show_report(config):
     # ── Se imprime todo el informe junto, ya armado en el buffer ──
     print("\n".join(buffer))
 
-    # ── Barra de acciones finales — Salir / Guardar TXT / Guardar LOG ─────
+    # ── Barra de acciones finales — Salir / Guardar TXT / Guardar LOG / Guardar PDF ─────
     # Para habilitar la opcion "(P) Save PDF" instalar la libreria fpdf2: "pip install fpdf2 --break-system-packages"
-    pdf_hint = " | (P) Save PDF" if _PDF_AVAILABLE else ""
-    bar_text = f"{icon_bar}{REVERSE}{DIM}(Q/X) Exit | (T) Save TXT | (L) Save LOG{pdf_hint}{RESET}"
+    # 🚪 (Q/X) Exit | 📝 (T) Save TXT | 📜 (L) Save LOG | 📄 (P) Save PDF
+    pdf_hint = f" | {icon_pdf}(P) Save PDF" if _PDF_AVAILABLE else ""
+    bar_text = f"{icon_bar}{REVERSE}{DIM}{icon_exit}(Q/X) Exit | {icon_txt}(T) Save TXT | {icon_log}(L) Save LOG{pdf_hint}{RESET}"
     sys.stdout.write(bar_text)
     sys.stdout.flush()
-    _wait_final_keypress(buffer)
+    _wait_final_keypress(buffer, config.icon)
 
     # 4.0 — VOLCADO DE DEBUG (DB COMPLETA)
     # Excepción consciente a la regla 6: accede directo a _stats_db porque esto
@@ -394,47 +428,8 @@ def show_report(config):
 # 3.0 — GUARDADO DE ARCHIVOS Y CONTROL DE TECLADO (POST-INFORME)
 # =============================================================
 
-def _strip_ansi(text: str) -> str:
-    """Remueve todos los códigos de color/estilo ANSI — usado para el TXT limpio."""
-    return _ANSI_RE.sub("", text)
-
-def _save_file(buffer, extension: str, strip_colors: bool):
-    """Vuelca el buffer de líneas a un archivo en REPORTS_DIR.
-    El nombre usa la hora de ARRANQUE del script (no la de guardado) — representa
-    cuándo empezó la medición, no cuándo el usuario se acordó de guardarla."""
-    try:
-        os.makedirs(REPORTS_DIR, exist_ok=True)
-        timestamp = sysstat_core.get_start_timestamp()
-        filename  = f"sysstat_{timestamp}.{extension}"
-        filepath  = os.path.join(REPORTS_DIR, filename)
-        content   = "\n".join(_strip_ansi(l) if strip_colors else l for l in buffer)
-        with open(filepath, "w", encoding="utf-8") as f:
-            f.write(content + "\n")
-        return filepath
-    except Exception:
-        return None
-
-def _save_pdf(buffer):
-    """Vuelca el buffer a PDF via fpdf2. Sin emojis — fuentes core son Latin-1."""
-    try:
-        from fpdf import FPDF
-        os.makedirs(REPORTS_DIR, exist_ok=True)
-        timestamp = sysstat_core.get_start_timestamp()
-        filename  = f"sysstat_{timestamp}.pdf"
-        filepath  = os.path.join(REPORTS_DIR, filename)
-        pdf = FPDF()
-        pdf.add_page()
-        pdf.set_font("Courier", size=10)
-        for line in buffer:
-            clean = _strip_ansi(line).encode("latin-1", errors="ignore").decode("latin-1")
-            pdf.cell(0, 5, text=clean, new_x="LMARGIN", new_y="NEXT")
-        pdf.output(filepath)
-        return filepath
-    except Exception:
-        return None
-
-def _wait_final_keypress(buffer):
-    """Espera Q/X (salir), T (guardar TXT) o L (guardar LOG). Tras guardar, sale directo."""
+def _wait_final_keypress(buffer, icon_mode: bool):
+    """Espera Q/X (salir), T (guardar TXT) o L (guardar LOG) o P (guarda PDF). Tras guardar, sale directo."""
     import tty
     import termios
     fd           = sys.stdin.fileno()
@@ -457,12 +452,92 @@ def _wait_final_keypress(buffer):
                 sys.stdout.write(f"\nView: cat {saved_path}")
                 break
             elif key == "p" and _PDF_AVAILABLE:
-                saved_path = _save_pdf(buffer)
+                saved_path = _save_pdf(buffer, icon_mode)
                 sys.stdout.write(f"\nView: xdg-open {saved_path}" if saved_path else "\nError: no se pudo generar el PDF")
                 break
     finally:
         termios.tcsetattr(fd, termios.TCSADRAIN, old_settings)
         print()
+
+def _save_file(buffer, extension: str, strip_colors: bool):
+    """Vuelca el buffer de líneas a un archivo en REPORTS_DIR.
+    El nombre usa la hora de ARRANQUE del script (no la de guardado) — representa
+    cuándo empezó la medición, no cuándo el usuario se acordó de guardarla."""
+    try:
+        os.makedirs(REPORTS_DIR, exist_ok=True)
+        timestamp = sysstat_core.get_start_timestamp()
+        filename  = f"sysstat_{timestamp}.{extension}"
+        filepath  = os.path.join(REPORTS_DIR, filename)
+        content   = "\n".join(_strip_ansi(l) if strip_colors else l for l in buffer)
+        with open(filepath, "w", encoding="utf-8") as f:
+            f.write(content + "\n")
+        return filepath
+    except Exception:
+        return None
+
+def _strip_ansi(text: str) -> str:
+    """Remueve todos los códigos de color/estilo ANSI — usado para el TXT limpio."""
+    return _ANSI_RE.sub("", text)
+
+def _pdf_segments(line: str, icon_mode: bool):
+    """Parsea una línea con códigos ANSI y devuelve [(texto, bold, rgb), ...],
+    limpiando emojis y preservando negrita/color para el PDF.
+
+    La 'zona de ícono' (íconos reales, o relleno tipo ghost_icon/icon_pad)
+    siempre vale ICON_ZONE_WIDTH columnas en la terminal — con ícono real o
+    sin él. En el PDF no hay ícono que mostrar, así que esa zona se recorta
+    a 0 en el PRIMER segmento de la línea, tope ICON_ZONE_WIDTH para no
+    comerse la zona de COL_LABEL que sigue (la que alinea los renglones
+    fantasma de RAM/Swap/Disk en GB bajo sus valores en %)."""
+    segments = []
+    bold     = False
+    rgb      = _PDF_BLACK
+    first    = True
+    for part in _ANSI_SPLIT_RE.split(line):
+        if not part:
+            continue
+        if part.startswith("\033["):
+            if part == RESET:
+                bold, rgb = False, _PDF_BLACK
+            elif part == BOLD:
+                bold = True
+            elif part in _ANSI_COLOR_MAP:
+                rgb = _ANSI_COLOR_MAP[part]
+            # códigos desconocidos se ignoran (KISS)
+            continue
+        text = _EMOJI_RE.sub("", part)
+        if first:
+            if icon_mode:
+                stripped = text.lstrip(" ")
+                removed  = len(text) - len(stripped)
+                text     = (" " * max(0, removed - ICON_ZONE_WIDTH)) + stripped
+            first = False
+        if text:
+            segments.append((text, bold, rgb))
+    return segments
+
+def _save_pdf(buffer, icon_mode: bool):
+    """Vuelca el buffer a PDF via fpdf2, preservando negrita y colores críticos.
+    Los emojis se eliminan por regex de rango Unicode (fuentes core son Latin-1)."""
+    try:
+        from fpdf import FPDF
+        os.makedirs(REPORTS_DIR, exist_ok=True)
+        timestamp = sysstat_core.get_start_timestamp()
+        filename  = f"sysstat_{timestamp}.pdf"
+        filepath  = os.path.join(REPORTS_DIR, filename)
+        line_h = 5
+        pdf = FPDF()
+        pdf.add_page()
+        for line in buffer:
+            for text, bold, rgb in _pdf_segments(line, icon_mode):
+                pdf.set_font("Courier", style="B" if bold else "", size=12)
+                pdf.set_text_color(*rgb)
+                pdf.write(line_h, text)
+            pdf.ln(line_h)
+        pdf.output(filepath)
+        return filepath
+    except Exception:
+        return None
 
 # =============================================================
 # 4.0 — VOLCADO DE DEBUG (DB COMPLETA)
