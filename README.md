@@ -1,11 +1,11 @@
 ![Platform](https://img.shields.io/badge/Platform-Linux-lightgrey?style=flat-square&logo=linux)
 ![Python](https://img.shields.io/badge/Python-3.x-blue?style=flat-square)
 ![License](https://img.shields.io/badge/License-GPLv3-green?style=flat-square)
-![Version](https://img.shields.io/badge/Version-5.43.0.20260622b-orange?style=flat-square)
+![Version](https://img.shields.io/badge/Version-5.43.0.20260624a-orange?style=flat-square)
 
-# SysStat (System Status) CLI/GUI v5.43.0.20260622b
+# SysStat (System Status) CLI/GUI v5.43.0.20260624a
 
-![SysStat CLI](screenshot1.png)
+![SysStat CLI](images/screenshot1.png)
 
 ## 🇺🇸🇬🇧 English
 
@@ -46,14 +46,14 @@ Files communicate **only** through `sysstat_core`'s public API (`get()`, `get_st
 - **WiFi**: IP, SSID, signal %, link speed, down/up throughput, adapter temperature.
 - **Progress bars**: independently toggleable per metric.
 - **Loop mode**: run every N seconds, indefinitely or for a fixed number of cycles (`-N`).
-- **Final report**: on exit, shows min/avg/max for every tracked metric; press **T** to save as `.txt` (clean) or **L** to save as `.log` (with ANSI colors).
+- **Final report**: on exit, shows min/avg/max for every tracked metric; press **T** to save as `.txt` (clean), **L** to save as `.log` (with ANSI colors), or **P** to save as `.pdf` *(requires `fpdf2`, optional)*.
 - **Icon-free mode**: for terminals without Unicode/emoji support (auto-detected).
 
 ### 📸 Under load
 
 Color thresholds reacting to a real CPU/load spike — same script, same terminal:
 
-![SysStat under load](screenshot2.png)
+![SysStat under load](images/screenshot2.png)
 
 ```
 🐧 OS: Linux Mint 22.3 - ⚙️ Kernel version: 6.14.0-37-generic
@@ -81,9 +81,13 @@ Color thresholds reacting to a real CPU/load spike — same script, same termina
 
 ### 📊 Final report
 
-When the script exits, it prints a min/avg/max summary for the whole session and lets you save it as `.txt` or `.log`:
+When the script exits, it prints a min/avg/max summary for the whole session and lets you save it as `.txt`, `.log`, or `.pdf`:
 
-![SysStat final report](screenshot3.png)
+> 📄 PDF export requires `fpdf2` (`pip install fpdf2 --break-system-packages`). If it's not installed, the **(P) Save PDF** option simply doesn't appear — everything else works the same.
+
+**Sample reports:** [.txt](examples/sysstat_example.txt) · [.log](examples/sysstat_example.log) · [.pdf](examples/sysstat_example.pdf)
+
+![SysStat final report](images/screenshot3.png)
 
 ```
 SysStat CLI/GUI v5.32.0.20260617a
@@ -125,6 +129,12 @@ pip install psutil
 git clone https://github.com/LiGNUxMan/SysStat.git
 cd SysStat
 python3 sysstat.py
+```
+
+**Optional — PDF report export:**
+
+```bash
+pip install fpdf2 --break-system-packages
 ```
 
 ### Usage
@@ -215,7 +225,7 @@ Distributed under **GPLv3**. Use it, modify it, share it.
 
 ---
 
-![SysStat CLI](screenshot1.png)
+![SysStat CLI](images/screenshot1.png)
 
 ## 🇪🇸 Español
 
@@ -256,14 +266,14 @@ Los archivos se comunican **únicamente** a través de la API pública de `sysst
 - **WiFi**: IP, SSID, % de señal, velocidad, throughput de bajada/subida, temperatura de la placa.
 - **Barras de progreso**: activables/desactivables de forma independiente por métrica.
 - **Modo bucle**: ejecuta cada N segundos, indefinidamente o por una cantidad fija de ciclos (`-N`).
-- **Informe final**: al salir, muestra min/avg/max de cada métrica registrada; presioná **T** para guardar como `.txt` (limpio) o **L** para guardar como `.log` (con colores ANSI).
+- **Informe final**: al salir, muestra min/avg/max de cada métrica registrada; presioná **T** para guardar como `.txt` (limpio), **L** para guardar como `.log` (con colores ANSI), o **P** para guardar como `.pdf` *(requiere `fpdf2`, opcional)*.
 - **Modo sin íconos**: para terminales sin soporte Unicode/emoji (detección automática).
 
 ### 📸 Bajo carga
 
 Los umbrales de color reaccionando a un pico real de CPU/carga — mismo script, misma terminal:
 
-![SysStat bajo carga](screenshot2.png)
+![SysStat bajo carga](images/screenshot2.png)
 
 ```
 🐧 OS: Linux Mint 22.3 - ⚙️ Kernel version: 6.14.0-37-generic
@@ -291,9 +301,13 @@ Los umbrales de color reaccionando a un pico real de CPU/carga — mismo script,
 
 ### 📊 Informe final
 
-Al salir del script, imprime un resumen min/avg/max de toda la sesión y te deja guardarlo como `.txt` o `.log`:
+Al salir del script, imprime un resumen min/avg/max de toda la sesión y te deja guardarlo como `.txt`, `.log` o `.pdf`:
 
-![SysStat informe final](screenshot3.png)
+> 📄 Exportar a PDF requiere `fpdf2` (`pip install fpdf2 --break-system-packages`). Si no está instalado, la opción **(P) Save PDF** simplemente no aparece — el resto funciona igual.
+
+**Informes de ejemplo:** [.txt](examples/sysstat_example.txt) · [.log](examples/sysstat_example.log) · [.pdf](examples/sysstat_example.pdf)
+
+![SysStat informe final](images/screenshot3.png)
 
 ```
 SysStat CLI/GUI v5.32.0.20260617a
@@ -335,6 +349,12 @@ pip install psutil
 git clone https://github.com/LiGNUxMan/SysStat.git
 cd SysStat
 python3 sysstat.py
+```
+
+**Opcional — exportar informes a PDF:**
+
+```bash
+pip install fpdf2 --break-system-packages
 ```
 
 ### Uso
