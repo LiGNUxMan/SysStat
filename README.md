@@ -91,12 +91,12 @@ When the script exits, it prints a min/avg/max summary for the whole session and
 
 ```
 SysStat CLI/GUI v5.32.0.20260617a
-🐧 OS: Linux Mint 22.3 - ⚙️  Kernel version: 7.0.0-14-generic
+🐧 OS: Linux Mint 22.3 - ⚙️ Kernel version: 7.0.0-14-generic
 🏠 Hostname: hal9001c - 👤 User: axel
 🕒 Start: 20:27:26 17/06/26 - 📅 End: 22:42:30 17/06/26 - 🔄 Cycles: 807
                 Min           Avg           Max
 🎛️ CPU used:    5%            21%           79%
-⚡ CPU freq:    0.70GHz       1.34GHz       3.11GHz
+⚡  CPU freq:    0.70GHz       1.34GHz       3.11GHz
 🌡️ CPU temp:    32°C          39°C          62°C
 📟 RAM used:    48%           50%           68%
                 7.37GB        7.72GB        10.50GB
@@ -311,12 +311,12 @@ Al salir del script, imprime un resumen min/avg/max de toda la sesión y te deja
 
 ```
 SysStat CLI/GUI v5.32.0.20260617a
-🐧 OS: Linux Mint 22.3 - ⚙️  Kernel version: 7.0.0-14-generic
+🐧 OS: Linux Mint 22.3 - ⚙️ Kernel version: 7.0.0-14-generic
 🏠 Hostname: hal9001c - 👤 User: axel
 🕒 Start: 20:27:26 17/06/26 - 📅 End: 22:42:30 17/06/26 - 🔄 Cycles: 807
                 Min           Avg           Max
 🎛️ CPU used:    5%            21%           79%
-⚡ CPU freq:    0.70GHz       1.34GHz       3.11GHz
+⚡  CPU freq:    0.70GHz       1.34GHz       3.11GHz
 🌡️ CPU temp:    32°C          39°C          62°C
 📟 RAM used:    48%           50%           68%
                 7.37GB        7.72GB        10.50GB
