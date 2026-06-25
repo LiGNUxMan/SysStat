@@ -1,5 +1,5 @@
 SysStat CLI/GUI v5.43.0.20260624a
-🐧 OS: Linux Mint 22.3 - ⚙️  Kernel version: 7.0.0-14-generic
+🐧 OS: Linux Mint 22.3 - ⚙️ Kernel version: 7.0.0-14-generic
 🏠 Hostname: hal9001c - 👤 User: axel
 🕒 Start: 20:27:26 17/06/26 - 📅 End: 22:42:30 17/06/26
 ⏱️  Runtime: 02:15:04 - 🔄 Cycles: 807
