@@ -1,0 +1,25 @@
+[1mSysStat CLI/GUI[0m v5.43.0.20260624a
+🐧 OS: [1mLinux Mint 22.3[0m - ⚙️  Kernel version: [1m7.0.0-14-generic[0m
+🏠 Hostname: [1mhal9001c[0m - 👤 User: [1maxel[0m
+🕒 Start: [1m20:27:26 17/06/26[0m - 📅 End: [1m22:42:30 17/06/26[0m
+⏱️  Runtime: [1m02:15:04[0m - 🔄 Cycles: [1m807[0m
+                [2mMin           Avg           Max          [0m
+🔲 CPU used:    [0m[1m5%           [0m [93m[1m21%          [0m [31m[1m79%          [0m
+⚡ CPU freq:    [0m[1m0.70GHz      [0m [93m[1m1.34GHz      [0m [31m[1m3.11GHz      [0m
+🌡️  CPU temp:    [0m[1m32°C         [0m [0m[1m39°C         [0m [38;5;208m[1m62°C         [0m
+📟 RAM used:    [0m[1m48%          [0m [0m[1m50%          [0m [93m[1m68%          [0m
+                [1m7.37GB       [0m [1m7.72GB       [0m [1m10.50GB      [0m
+💾 Swap used:   [0m[1m0%           [0m [0m[1m0%           [0m [0m[1m0%           [0m
+                [1m0.00GB       [0m [1m0.00GB       [0m [1m0.00GB       [0m
+📋 Processes:   [1m296          [0m [1m301          [0m [1m310          [0m
+📊 Load avg:    [0m[1m0.03         [0m [93m[1m1.13         [0m [31m[1m4.88         [0m
+🗄️  Disk used:   [0m[1m55%          [0m [0m[1m55%          [0m [0m[1m55%          [0m
+                [1m259.24GB     [0m [1m259.28GB     [0m [1m259.33GB     [0m
+📥 Disk read:   [1m0.00MB/s     [0m [1m0.04MB/s     [0m [1m13.85MB/s    [0m
+📤 Disk write:  [1m0.00MB/s     [0m [1m0.24MB/s     [0m [1m6.23MB/s     [0m
+🌡️  Disk temp:   [0m[1m31°C         [0m [0m[1m32°C         [0m [0m[1m36°C         [0m
+📶 WiFi signal: [0m[1m52%          [0m [0m[1m57%          [0m [0m[1m64%          [0m
+   WiFi speed:  [1m97.60Mb/s    [0m [1m202.99Mb/s   [0m [1m260.00Mb/s   [0m
+⬇️  WiFi down:   [1m0.00MB/s     [0m [1m0.08MB/s     [0m [1m1.30MB/s     [0m
+⬆️  WiFi up:     [1m0.00MB/s     [0m [1m0.00MB/s     [0m [1m0.08MB/s     [0m
+🌡️  WiFi temp:   [0m[1m30°C         [0m [0m[1m40°C         [0m [0m[1m47°C         [0m
