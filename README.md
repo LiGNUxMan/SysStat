@@ -90,30 +90,31 @@ When the script exits, it prints a min/avg/max summary for the whole session and
 ![SysStat final report](images/screenshot3.png)
 
 ```
-SysStat CLI/GUI v5.32.0.20260617a
+SysStat CLI/GUI v5.43.0.20260622a
 🐧 OS: Linux Mint 22.3 - ⚙️ Kernel version: 7.0.0-14-generic
 🏠 Hostname: hal9001c - 👤 User: axel
-🕒 Start: 20:27:26 17/06/26 - 📅 End: 22:42:30 17/06/26 - 🔄 Cycles: 807
+🕒 Start: 22:02:43 21/06/26 - 📅 End: 19:40:38 22/06/26
+⏱️ Runtime: 21:37:58 - 🔄 Cycles: 593
                 Min           Avg           Max
-🎛️ CPU used:    5%            21%           79%
-⚡  CPU freq:    0.70GHz       1.34GHz       3.11GHz
-🌡️ CPU temp:    32°C          39°C          62°C
-📟 RAM used:    48%           50%           68%
-                7.37GB        7.72GB        10.50GB
+🔲 CPU used:    1%            17%           85%
+⚡  CPU freq:    0.70GHz       1.20GHz       3.10GHz
+🌡️ CPU temp:    28°C          35°C          64°C
+📟 RAM used:    34%           38%           44%
+                5.33GB        5.82GB        6.87GB
 💾 Swap used:   0%            0%            0%
                 0.00GB        0.00GB        0.00GB
-📋 Processes:   296           301           310
-📊 Load avg:    0.03          1.13          4.88
+📋 Processes:   283           292           368
+📊 Load avg:    0.06          1.01          6.95
 🗄️ Disk used:   55%           55%           55%
-                259.24GB      259.28GB      259.33GB
-📥 Disk read:   0.00MB/s      0.04MB/s      13.85MB/s
-📤 Disk write:  0.00MB/s      0.24MB/s      6.23MB/s
-🌡️ Disk temp:   31°C          32°C          36°C
-📶 WiFi signal: 52%           57%           64%
-   WiFi speed:  97.60Mb/s     202.99Mb/s    260.00Mb/s
-⬇️ WiFi down:   0.00MB/s      0.08MB/s      1.30MB/s
-⬆️ WiFi up:     0.00MB/s      0.00MB/s      0.08MB/s
-🌡️ WiFi temp:   30°C          40°C          47°C
+                257.34GB      257.38GB      257.42GB
+📥 Disk read:   0.00MB/s      0.02MB/s      2.36MB/s
+📤 Disk write:  0.00MB/s      0.27MB/s      8.18MB/s
+🌡️ Disk temp:   29°C          32°C          45°C
+📶 WiFi signal: 100%          100%          100%
+   WiFi speed:  260.00Mb/s    427.52Mb/s    433.30Mb/s
+⬇️ WiFi down:   0.00MB/s      0.11MB/s      5.64MB/s
+⬆️ WiFi up:     0.00MB/s      0.00MB/s      0.06MB/s
+🌡️ WiFi temp:   29°C          36°C          41°C
 ```
 
 ### Installation
@@ -310,30 +311,31 @@ Al salir del script, imprime un resumen min/avg/max de toda la sesión y te deja
 ![SysStat informe final](images/screenshot3.png)
 
 ```
-SysStat CLI/GUI v5.32.0.20260617a
+SysStat CLI/GUI v5.43.0.20260622a
 🐧 OS: Linux Mint 22.3 - ⚙️ Kernel version: 7.0.0-14-generic
 🏠 Hostname: hal9001c - 👤 User: axel
-🕒 Start: 20:27:26 17/06/26 - 📅 End: 22:42:30 17/06/26 - 🔄 Cycles: 807
+🕒 Start: 22:02:43 21/06/26 - 📅 End: 19:40:38 22/06/26
+⏱️ Runtime: 21:37:58 - 🔄 Cycles: 593
                 Min           Avg           Max
-🎛️ CPU used:    5%            21%           79%
-⚡  CPU freq:    0.70GHz       1.34GHz       3.11GHz
-🌡️ CPU temp:    32°C          39°C          62°C
-📟 RAM used:    48%           50%           68%
-                7.37GB        7.72GB        10.50GB
+🔲 CPU used:    1%            17%           85%
+⚡  CPU freq:    0.70GHz       1.20GHz       3.10GHz
+🌡️ CPU temp:    28°C          35°C          64°C
+📟 RAM used:    34%           38%           44%
+                5.33GB        5.82GB        6.87GB
 💾 Swap used:   0%            0%            0%
                 0.00GB        0.00GB        0.00GB
-📋 Processes:   296           301           310
-📊 Load avg:    0.03          1.13          4.88
+📋 Processes:   283           292           368
+📊 Load avg:    0.06          1.01          6.95
 🗄️ Disk used:   55%           55%           55%
-                259.24GB      259.28GB      259.33GB
-📥 Disk read:   0.00MB/s      0.04MB/s      13.85MB/s
-📤 Disk write:  0.00MB/s      0.24MB/s      6.23MB/s
-🌡️ Disk temp:   31°C          32°C          36°C
-📶 WiFi signal: 52%           57%           64%
-   WiFi speed:  97.60Mb/s     202.99Mb/s    260.00Mb/s
-⬇️ WiFi down:   0.00MB/s      0.08MB/s      1.30MB/s
-⬆️ WiFi up:     0.00MB/s      0.00MB/s      0.08MB/s
-🌡️ WiFi temp:   30°C          40°C          47°C
+                257.34GB      257.38GB      257.42GB
+📥 Disk read:   0.00MB/s      0.02MB/s      2.36MB/s
+📤 Disk write:  0.00MB/s      0.27MB/s      8.18MB/s
+🌡️ Disk temp:   29°C          32°C          45°C
+📶 WiFi signal: 100%          100%          100%
+   WiFi speed:  260.00Mb/s    427.52Mb/s    433.30Mb/s
+⬇️ WiFi down:   0.00MB/s      0.11MB/s      5.64MB/s
+⬆️ WiFi up:     0.00MB/s      0.00MB/s      0.06MB/s
+🌡️ WiFi temp:   29°C          36°C          41°C
 ```
 
 ### Instalación
