@@ -85,7 +85,7 @@ When the script exits, it prints a min/avg/max summary for the whole session and
 
 > 📄 PDF export requires `fpdf2` (`pip install fpdf2 --break-system-packages`). If it's not installed, the **(P) Save PDF** option simply doesn't appear — everything else works the same.
 
-**Sample reports:** [.txt](examples/sysstat_example.txt) · [.log](examples/sysstat_example.log) · [.pdf](examples/sysstat_example.pdf)
+**Sample reports:** [.txt](sysstat_reports/sysstat_20260617_202726.txt) · [.log](sysstat_reports/sysstat_20260617_202726.log) · [.pdf](sysstat_reports/sysstat_20260617_202726.pdf)
 
 ![SysStat final report](images/screenshot3.png)
 
@@ -305,7 +305,7 @@ Al salir del script, imprime un resumen min/avg/max de toda la sesión y te deja
 
 > 📄 Exportar a PDF requiere `fpdf2` (`pip install fpdf2 --break-system-packages`). Si no está instalado, la opción **(P) Save PDF** simplemente no aparece — el resto funciona igual.
 
-**Informes de ejemplo:** [.txt](examples/sysstat_example.txt) · [.log](examples/sysstat_example.log) · [.pdf](examples/sysstat_example.pdf)
+**Informes de ejemplo:** [.txt](sysstat_reports/sysstat_20260617_202726.txt) · [.log](sysstat_reports/sysstat_20260617_202726.log) · [.pdf](sysstat_reports/sysstat_20260617_202726.pdf)
 
 ![SysStat informe final](images/screenshot3.png)
 
