@@ -85,8 +85,6 @@ When the script exits, it prints a min/avg/max summary for the whole session and
 
 > 📄 PDF export requires `fpdf2` (`pip install fpdf2 --break-system-packages`). If it's not installed, the **(P) Save PDF** option simply doesn't appear — everything else works the same.
 
-**Sample reports:** [.txt](sysstat_reports/sysstat_20260617_202726.txt) · [.log](sysstat_reports/sysstat_20260617_202726.log) · [.pdf](sysstat_reports/sysstat_20260617_202726.pdf)
-
 ![SysStat final report](images/screenshot3.png)
 
 ```
@@ -116,6 +114,8 @@ SysStat CLI/GUI v5.43.0.20260622a
 ⬆️ WiFi up:     0.00MB/s      0.00MB/s      0.06MB/s
 🌡️ WiFi temp:   29°C          36°C          41°C
 ```
+
+**Sample reports:** [.txt](sysstat_reports/sysstat_20260617_202726.txt) · [.log](sysstat_reports/sysstat_20260617_202726.log) · [.pdf](sysstat_reports/sysstat_20260617_202726.pdf)
 
 ### Installation
 
@@ -306,8 +306,6 @@ Al salir del script, imprime un resumen min/avg/max de toda la sesión y te deja
 
 > 📄 Exportar a PDF requiere `fpdf2` (`pip install fpdf2 --break-system-packages`). Si no está instalado, la opción **(P) Save PDF** simplemente no aparece — el resto funciona igual.
 
-**Informes de ejemplo:** [.txt](sysstat_reports/sysstat_20260617_202726.txt) · [.log](sysstat_reports/sysstat_20260617_202726.log) · [.pdf](sysstat_reports/sysstat_20260617_202726.pdf)
-
 ![SysStat informe final](images/screenshot3.png)
 
 ```
@@ -337,6 +335,8 @@ SysStat CLI/GUI v5.43.0.20260622a
 ⬆️ WiFi up:     0.00MB/s      0.00MB/s      0.06MB/s
 🌡️ WiFi temp:   29°C          36°C          41°C
 ```
+
+**Informes de ejemplo:** [.txt](sysstat_reports/sysstat_20260617_202726.txt) · [.log](sysstat_reports/sysstat_20260617_202726.log) · [.pdf](sysstat_reports/sysstat_20260617_202726.pdf)
 
 ### Instalación
 
