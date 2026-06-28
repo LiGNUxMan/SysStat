@@ -49,6 +49,12 @@ Files communicate **only** through `sysstat_core`'s public API (`get()`, `get_st
 - **Final report**: on exit, shows min/avg/max for every tracked metric; press **T** to save as `.txt` (clean), **L** to save as `.log` (with ANSI colors), or **P** to save as `.pdf` *(requires `fpdf2`, optional)*.
 - **Icon-free mode**: for terminals without Unicode/emoji support (auto-detected).
 
+### 💡 Real-world setup
+
+Pairs great with a drop-down terminal like [Guake](http://guake-project.org/) bound to a hotkey (e.g. F12) — pull up the monitor whenever you need it, without taking up permanent desktop space:
+
+![SysStat with Guake](images/screenshot4.png)
+
 ### 📸 Under load
 
 Color thresholds reacting to a real CPU/load spike — same script, same terminal:
@@ -269,6 +275,12 @@ Los archivos se comunican **únicamente** a través de la API pública de `sysst
 - **Modo bucle**: ejecuta cada N segundos, indefinidamente o por una cantidad fija de ciclos (`-N`).
 - **Informe final**: al salir, muestra min/avg/max de cada métrica registrada; presioná **T** para guardar como `.txt` (limpio), **L** para guardar como `.log` (con colores ANSI), o **P** para guardar como `.pdf` *(requiere `fpdf2`, opcional)*.
 - **Modo sin íconos**: para terminales sin soporte Unicode/emoji (detección automática).
+
+### 💡 Uso en el día a día
+
+Combina genial con una terminal desplegable como [Guake](http://guake-project.org/) atada a una tecla rápida (ej. F12) — invocás el monitor cuando lo necesitás, sin ocupar espacio fijo de escritorio:
+
+![SysStat con Guake](images/screenshot4.png)
 
 ### 📸 Bajo carga
 
