@@ -344,9 +344,9 @@ SysStat CLI/GUI v5.43.0.20260622a
 📥 Disk read:   0.00MB/s      0.02MB/s      2.36MB/s
 📤 Disk write:  0.00MB/s      0.27MB/s      8.18MB/s
 🌡️ Disk temp:   29°C          32°C          45°C
-🖧  Lan speed:   100Mb/s       100.0Mb/s     100Mb/s
-⬇️  Lan down:    0.00MB/s      0.03MB/s      1.09MB/s
-⬆️  Lan up:      0.00MB/s      0.00MB/s      0.05MB/s
+🖧 Lan speed:   100Mb/s       100.0Mb/s     100Mb/s
+⬇️ Lan down:    0.00MB/s      0.03MB/s      1.09MB/s
+⬆️ Lan up:      0.00MB/s      0.00MB/s      0.05MB/s
 📶 WiFi signal: 100%          100%          100%
    WiFi speed:  260.00Mb/s    427.52Mb/s    433.30Mb/s
 ⬇️ WiFi down:   0.00MB/s      0.11MB/s      5.64MB/s
