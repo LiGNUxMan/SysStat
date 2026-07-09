@@ -68,7 +68,7 @@ Color thresholds reacting to a real CPU/load spike — same script, same termina
 🕒 Uptime: 5d 23:49:26 - 📅 Time and date: 09:29:35 09/07/26
 🔳 CPU used: 50% (0: 49% - 1: 50% - 2: 50% - 3: 50%)
    ████████████████░░░░░░░░░░░░░░░░
-🚀 CPU frequency: 1.60GHz (0,1,2,3) - 🎚️  Scaling governor: powersave
+🚀 CPU frequency: 1.60GHz (0,1,2,3) - 🎚️ Scaling governor: powersave
    ████████████████░░░░░░░░░░░░░░░░
 🌡️ CPU temperature: 39°C
 📟 RAM used: 49% (7.57GB/15.49GB) - 🔀 Swap used: 0% (0.00GB/0.00GB)
@@ -78,9 +78,9 @@ Color thresholds reacting to a real CPU/load spike — same script, same termina
 🗄️ Disk used: 55% (258.92GB/467.91GB) - 📥 R: 0.00MB/s - 📤 W: 0.17MB/s
    █████████████████░░░░░░░░░░░░░░░
 🌡️ Disk temperature: 33°C
-🖧 LAN IP: 192.168.0.117 - Spd: 100Mb/s(F) - ⬇️  D: 0.00MB/s - ⬆️  U: 0.00MB/s
+🖧 LAN IP: 192.168.0.117 - Spd: 100Mb/s(F) - ⬇️ D: 0.00MB/s - ⬆️ U: 0.00MB/s
 🗼 WiFi IP: 192.168.0.208 - SSID: OBRIEN 5
-🛜 WiFi signal: 52% - Spd: 117.00Mb/s - ⬇️  D: 0.01MB/s - ⬆️  U: 0.00MB/s
+🛜 WiFi signal: 52% - Spd: 117.00Mb/s - ⬇️ D: 0.01MB/s - ⬆️ U: 0.00MB/s
    ████████████████░░░░░░░░░░░░░░░░
 🌡️ WiFi temperature: 45°C
 🔋 Battery: 86% - Time: 3h 45m - Mode: Discharging
@@ -302,7 +302,7 @@ Los umbrales de color reaccionando a un pico real de CPU/carga — mismo script,
 🕒 Uptime: 5d 23:49:26 - 📅 Time and date: 09:29:35 09/07/26
 🔳 CPU used: 50% (0: 49% - 1: 50% - 2: 50% - 3: 50%)
    ████████████████░░░░░░░░░░░░░░░░
-🚀 CPU frequency: 1.60GHz (0,1,2,3) - 🎚️  Scaling governor: powersave
+🚀 CPU frequency: 1.60GHz (0,1,2,3) - 🎚️ Scaling governor: powersave
    ████████████████░░░░░░░░░░░░░░░░
 🌡️ CPU temperature: 39°C
 📟 RAM used: 49% (7.57GB/15.49GB) - 🔀 Swap used: 0% (0.00GB/0.00GB)
@@ -312,9 +312,9 @@ Los umbrales de color reaccionando a un pico real de CPU/carga — mismo script,
 🗄️ Disk used: 55% (258.92GB/467.91GB) - 📥 R: 0.00MB/s - 📤 W: 0.17MB/s
    █████████████████░░░░░░░░░░░░░░░
 🌡️ Disk temperature: 33°C
-🖧 LAN IP: 192.168.0.117 - Spd: 100Mb/s(F) - ⬇️  D: 0.00MB/s - ⬆️  U: 0.00MB/s
+🖧 LAN IP: 192.168.0.117 - Spd: 100Mb/s(F) - ⬇️ D: 0.00MB/s - ⬆️ U: 0.00MB/s
 🗼 WiFi IP: 192.168.0.208 - SSID: OBRIEN 5
-🛜 WiFi signal: 52% - Spd: 117.00Mb/s - ⬇️  D: 0.01MB/s - ⬆️  U: 0.00MB/s
+🛜 WiFi signal: 52% - Spd: 117.00Mb/s - ⬇️ D: 0.01MB/s - ⬆️ U: 0.00MB/s
    ████████████████░░░░░░░░░░░░░░░░
 🌡️ WiFi temperature: 45°C
 🔋 Battery: 86% - Time: 3h 45m - Mode: Discharging
