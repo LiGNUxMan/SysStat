@@ -36,7 +36,7 @@ Files communicate **only** through `sysstat_core`'s public API (`get()`, `get_st
 
 - **System info**: OS name and kernel version.
 - **Host**: hostname and current user.
-- **Uptime**: time since boot, start/current date and time.
+- **Uptime**: time since boot, current date and time.
 - **CPU**: total usage, per-core breakdown (`-cn` to collapse), frequency (GHz) with cores currently at max clock, scaling governor, temperature.
 - **RAM / Swap**: usage %, GB used/total, 3-segment bar (apps / cache+buffers / free) for RAM.
 - **Processes**: total processes, total threads (T), running (R), blocked/disk-sleep (D) and sleeping (S).
@@ -270,7 +270,7 @@ Los archivos se comunican **únicamente** a través de la API pública de `sysst
 
 - **Sistema**: nombre del SO y versión del kernel.
 - **Host**: hostname y usuario actual.
-- **Uptime**: tiempo desde el arranque, fecha/hora de inicio y actual.
+- **Uptime**: tiempo desde el arranque, fecha/hora actual.
 - **CPU**: uso total, detalle por núcleo (`-cn` para colapsarlo), frecuencia (GHz) con los núcleos que están al máximo, scaling governor, temperatura.
 - **RAM / Swap**: % de uso, GB usados/totales, barra de 3 segmentos (apps / caché+buffers / libre) para RAM.
 - **Procesos**: total de procesos, total de hilos (T), en ejecución (R), bloqueados (disk-sleep) (D) y durmiendo (S).
