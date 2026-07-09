@@ -10,7 +10,7 @@
 # sysstat_cli_info.py - INFORME FINAL CLI
 # =======================================
 #
-# Version: 055
+# Version: 064
 #
 # =======================================
 
@@ -69,26 +69,6 @@ _PDF_BLACK = (0, 0, 0)
 # 1.0 — HELPERS DE FORMATO Y ENTORNO
 # =============================================================
 
-def _check_unicode(config) -> bool:
-    """Verifica si el entorno soporta Unicode — misma lógica que cli.py."""
-    if not config.icon:
-        return False
-    term     = os.environ.get("TERM", "").lower()
-    encoding = (sys.stdout.encoding or "").lower()
-    if any(x in term for x in ["linux", "vt100", "xterm-color", "dumb", "ansi"]):
-        config.icon = False
-        return False
-    if not encoding.startswith("utf"):
-        config.icon = False
-        return False
-    try:
-        sys.stdout.write("🔁\r\033[K")
-        sys.stdout.flush()
-        return True
-    except Exception:
-        config.icon = False
-        return False
-
 def _color(key, value):
     return sysstat_core.get_metric_color(key, value)
 
@@ -125,62 +105,64 @@ def show_report(config):
     buffer = []
 
     print(f"\n")
-    _check_unicode(config)
 
     # ── Íconos resueltos una sola vez ────────────────────────
-    ghost_icon = "   " + " " * COL_LABEL if config.icon else " " * COL_LABEL
-    icon_pad   = "   " if config.icon else ""
-    icon_bar   = "   " if config.icon else ""
-    icon_exit  = "🚪 " if config.icon else ""
-    icon_txt   = "📝 " if config.icon else ""
-    icon_log   = "📜 " if config.icon else ""
-    icon_pdf   = "📄 " if config.icon else ""
+    ghost_icon    = "   " + " " * COL_LABEL if config.icon else " " * COL_LABEL
+    icon_pad      = "   " if config.icon else ""
+    icon_bar      = "   " if config.icon else ""
+    exit_icon     = "🚪 " if config.icon else ""
+    save_txt_icon = "📝 " if config.icon else ""
+    save_log_icon = "📜 " if config.icon else ""
+    save_pdf_icon = "📄 " if config.icon else ""
 
     if config.sys:
-        penguin = "🐧 " if config.icon else ""
-        gear    = "⚙️  " if config.icon else ""
+        os_name_icon = "🐧 " if config.icon else ""
+        kernel_icon  = "⚙️  " if config.icon else ""
 
     if config.host:
-        house  = "🏠 " if config.icon else ""
-        person = "👤 " if config.icon else ""
+        hostname_icon = "💻 " if config.icon else "" # Alternativas 🏠 💻 🖥️
+        user_icon     = "🧑 " if config.icon else "" # Alternativas 👤 🧑 🧑‍🦱
 
     if config.up:
-        clock     = "🕒 " if config.icon else ""
-        calendar  = "📅 " if config.icon else ""
-        stopwatch = "⏱️  " if config.icon else ""
-        loop      = "🔄 " if config.icon else ""
+        uptime_icon   = "🕒 " if config.icon else ""
+        datetime_icon = "📅 " if config.icon else ""
+        runtime_icon  = "⏱️  " if config.icon else ""
+        cycles_icon   = "🔄 " if config.icon else ""
 
     if config.cpu:
-        robot     = "🔲 " if config.icon else "" # Alternativas 🤖 🎛️ 🔲
-        lightning = "⚡ " if config.icon else "" # Alternatica ⚡ 🚀
-        thermcpu  = "🌡️  " if config.icon else ""
+        cpu_usage_icon = "🔳 " if config.icon else "" # Alternativas 🤖 🎛️ 🔲 🔳
+        cpu_freq_icon  = "🚀 " if config.icon else "" # Alternatica ⚡ 🚀
+        cpu_temp_icon  = "🌡️  " if config.icon else ""
 
     if config.ram:
-        ram_icon  = "📟 " if config.icon else ""
-        swap_icon = "💾 " if config.icon else ""
+        ram_icon  = "📟 " if config.icon else "" # Alternativas 🧮 📟
+        swap_icon = "🔀 " if config.icon else "" # Alternativas 💾 🔀
 
     if config.proc:
-        puzzle = "📋 " if config.icon else ""
+        proc_icon = "📋 " if config.icon else "" # Alternativas 🧩 📋
 
     if config.load:
-        chart = "📊 " if config.icon else ""
+        load_icon = "📊 " if config.icon else ""
 
     if config.disk:
-        disk_icon  = "🗄️  " if config.icon else ""
-        read_icon  = "📥 " if config.icon else ""
-        write_icon = "📤 " if config.icon else ""
-        thermdisk  = "🌡️  " if config.icon else ""
+        disk_icon       = "🗄️  " if config.icon else ""
+        disk_read_icon  = "📥 " if config.icon else ""
+        disk_write_icon = "📤 " if config.icon else ""
+        disk_temp_icon  = "🌡️  " if config.icon else ""
 
     if config.lan:
-        lan_icon  = "🖧 " if config.icon else "" # Alternativas 🌐 🖧 🔌
-        ldn_icon  = "⬇️  " if config.icon else ""
-        lup_icon  = "⬆️  " if config.icon else ""
+        lan_icon      = "🖧  " if config.icon else "" # Alternativas 🌐 🖧 🔌
+        lan_down_icon = "⬇️  " if config.icon else ""
+        lan_up_icon   = "⬆️  " if config.icon else ""
 
     if config.wifi:
-        wifi_icon = "📶 " if config.icon else ""
-        wifi_d    = "⬇️  " if config.icon else ""
-        wifi_u    = "⬆️  " if config.icon else ""
-        therm_w   = "🌡️  " if config.icon else ""
+        wifi_signal_icon = "🛜 " if config.icon else "" # Alternativas 🛜 📶
+        wifi_down_icon   = "⬇️  " if config.icon else ""
+        wifi_up_icon     = "⬆️  " if config.icon else ""
+        wifi_temp_icon   = "🌡️  " if config.icon else ""
+
+    if config.bat:
+        bat_icon = "🔋 " if config.icon else ""
 
     # ── Encabezado ───────────────────────────────────────────
     # SysStat CLI/GUI v5.23.0.20260615a
@@ -189,21 +171,22 @@ def show_report(config):
     # ── Sistema ───────────────────────────────────────────────
     # 🐧 OS: Linux Mint 22.3 - ⚙️  Kernel version: 7.0.0-14-generic
     if config.sys:
-        d = sysstat_core.get("sys")
-        buffer.append(f"{penguin}OS: {BOLD}{d['os_name']}{RESET} - {gear}Kernel version: {BOLD}{d['kernel_version']}{RESET}")
+        sys_data = sysstat_core.get("sys")
+        buffer.append(f"{os_name_icon}OS: {BOLD}{sys_data['os_name']}{RESET} - {kernel_icon}Kernel version: {BOLD}{sys_data['kernel_version']}{RESET}")
 
     # 🏠 Hostname: hal9001c - 👤 User: axel
     if config.host:
-        d = sysstat_core.get("host")
-        buffer.append(f"{house}Hostname: {BOLD}{d['hostname']}{RESET} - {person}User: {BOLD}{d['user']}{RESET}")
+        host_data = sysstat_core.get("host")
+        buffer.append(f"{hostname_icon}Hostname: {BOLD}{host_data['hostname']}{RESET} - {user_icon}User: {BOLD}{host_data['user']}{RESET}")
 
-    # 🕒 Start: 19:26:40 15/06/26 - 📅 End: 19:58:11 15/06/26 - 🔄 Cycles: 189
+    # 🕒 Uptime: 4d 20:02:28 - ⏱️  Runtime: 4d 18:07:53 - 🔄 Cycles: 15258
+    # 📅 Start: 18:14:32 24/06/26 - 📅 End: 12:22:18 29/06/26
     if config.up:
-        up       = sysstat_core.get("up")
-        start_dt = sysstat_core.get("start_datetime")
-        cycles   = sysstat_core.get_count("cpu") if config.cpu else 0
-        buffer.append(f"{clock}Start: {BOLD}{start_dt}{RESET} - {calendar}End: {BOLD}{up['datetime']}{RESET}")
-        buffer.append(f"{stopwatch}Runtime: {BOLD}{sysstat_core.get_runtime()}{RESET} - {loop}Cycles: {BOLD}{cycles}{RESET}")
+        uptime_data    = sysstat_core.get("up")
+        start_datetime = sysstat_core.get("start_datetime")
+        cycle_count    = sysstat_core.get_count("cpu") if config.cpu else 0
+        buffer.append(f"{uptime_icon}Uptime: {BOLD}{uptime_data['uptime']}{RESET} - {runtime_icon}Runtime: {BOLD}{sysstat_core.get_runtime()}{RESET} - {cycles_icon}Cycles: {BOLD}{cycle_count}{RESET}")
+        buffer.append(f"{datetime_icon}Start: {BOLD}{start_datetime}{RESET} - {datetime_icon}End: {BOLD}{uptime_data['datetime']}{RESET}")
 
     # ── Cabecera de columnas ──────────────────────────────────
     #                 Min           Avg           Max
@@ -216,7 +199,7 @@ def show_report(config):
     if config.cpu:
         cpu_s   = sysstat_core.get_stats("cpu")
         cpu_avg = round(cpu_s["avg"])
-        buffer.append(f"{robot}{f'CPU used:':<{COL_LABEL}}"
+        buffer.append(f"{cpu_usage_icon}{f'CPU used:':<{COL_LABEL}}"
             f"{_color_val(_color('cpu', cpu_s['min']), _pct(cpu_s['min']))} "
             f"{_color_val(_color('cpu', cpu_avg),      _pct(cpu_avg))} "
             f"{_color_val(_color('cpu', cpu_s['max']), _pct(cpu_s['max']))}"
@@ -224,7 +207,7 @@ def show_report(config):
 
         freq_s     = sysstat_core.get_stats("cpu_freq_hz")
         freq_pct_s = sysstat_core.get_stats("cpu_freq_pct")
-        buffer.append(f"{lightning}{f'CPU freq:':<{COL_LABEL}}"
+        buffer.append(f"{cpu_freq_icon}{f'CPU freq:':<{COL_LABEL}}"
             f"{_color_val(_color('cpu_freq_pct', freq_pct_s['min']), _ghz(freq_s['min']))} "
             f"{_color_val(_color('cpu_freq_pct', freq_pct_s['avg']), _ghz(freq_s['avg']))} "
             f"{_color_val(_color('cpu_freq_pct', freq_pct_s['max']), _ghz(freq_s['max']))}"
@@ -233,7 +216,7 @@ def show_report(config):
         if sysstat_core.get("cpu_temp"):
             temp_s   = sysstat_core.get_stats("cpu_temp")
             temp_avg = round(temp_s["avg"])
-            buffer.append(f"{thermcpu}{f'CPU temp:':<{COL_LABEL}}"
+            buffer.append(f"{cpu_temp_icon}{f'CPU temp:':<{COL_LABEL}}"
                 f"{_color_val(_color('cpu_temp', temp_s['min']), _temp(temp_s['min']))} "
                 f"{_color_val(_color('cpu_temp', temp_avg),      _temp(temp_avg))} "
                 f"{_color_val(_color('cpu_temp', temp_s['max']), _temp(temp_s['max']))}"
@@ -277,7 +260,7 @@ def show_report(config):
     # 📋 Processes:   296           301           310
     if config.proc:
         proc_s = sysstat_core.get_stats("proc")
-        buffer.append(f"{puzzle}{f'Processes:':<{COL_LABEL}}"
+        buffer.append(f"{proc_icon}{f'Processes:':<{COL_LABEL}}"
             f"{_color_val('', str(int(proc_s['min'])))} "
             f"{_color_val('', str(int(proc_s['avg'])))} "
             f"{_color_val('', str(int(proc_s['max'])))}"
@@ -288,7 +271,7 @@ def show_report(config):
     if config.load:
         load_s = sysstat_core.get_stats("load")
         def _load_fmt(v): return f"{v:.2f}"
-        buffer.append(f"{chart}{f'Load avg:':<{COL_LABEL}}"
+        buffer.append(f"{load_icon}{f'Load avg:':<{COL_LABEL}}"
             f"{_color_val(_color('load', load_s['min']), _load_fmt(load_s['min']))} "
             f"{_color_val(_color('load', load_s['avg']), _load_fmt(load_s['avg']))} "
             f"{_color_val(_color('load', load_s['max']), _load_fmt(load_s['max']))}"
@@ -316,14 +299,14 @@ def show_report(config):
         )
 
         read_s = sysstat_core.get_stats("disk_read")
-        buffer.append(f"{read_icon}{f'Disk read:':<{COL_LABEL}}"
+        buffer.append(f"{disk_read_icon}{f'Disk read:':<{COL_LABEL}}"
             f"{_color_val('', _mbs(read_s['min']))} "
             f"{_color_val('', _mbs(read_s['avg']))} "
             f"{_color_val('', _mbs(read_s['max']))}"
         )
 
         write_s = sysstat_core.get_stats("disk_write")
-        buffer.append(f"{write_icon}{f'Disk write:':<{COL_LABEL}}"
+        buffer.append(f"{disk_write_icon}{f'Disk write:':<{COL_LABEL}}"
             f"{_color_val('', _mbs(write_s['min']))} "
             f"{_color_val('', _mbs(write_s['avg']))} "
             f"{_color_val('', _mbs(write_s['max']))}"
@@ -332,7 +315,7 @@ def show_report(config):
         if sysstat_core.get("disk_temp"):
             dtemp_s   = sysstat_core.get_stats("disk_temp")
             dtemp_avg = round(dtemp_s["avg"])
-            buffer.append(f"{thermdisk}{f'Disk temp:':<{COL_LABEL}}"
+            buffer.append(f"{disk_temp_icon}{f'Disk temp:':<{COL_LABEL}}"
                 f"{_color_val(_color('disk_temp', dtemp_s['min']), _temp(dtemp_s['min']))} "
                 f"{_color_val(_color('disk_temp', dtemp_avg),      _temp(dtemp_avg))} "
                 f"{_color_val(_color('disk_temp', dtemp_s['max']), _temp(dtemp_s['max']))}"
@@ -349,14 +332,14 @@ def show_report(config):
         )
 
         down_s = sysstat_core.get_stats("lan_down")
-        buffer.append(f"{ldn_icon}{f'Lan down:':<{COL_LABEL}}"
+        buffer.append(f"{lan_down_icon}{f'Lan down:':<{COL_LABEL}}"
             f"{_color_val('', _mbs(down_s['min']))} "
             f"{_color_val('', _mbs(down_s['avg']))} "
             f"{_color_val('', _mbs(down_s['max']))}"
         )
 
         up_s = sysstat_core.get_stats("lan_up")
-        buffer.append(f"{lup_icon}{f'Lan up:':<{COL_LABEL}}"
+        buffer.append(f"{lan_up_icon}{f'Lan up:':<{COL_LABEL}}"
             f"{_color_val('', _mbs(up_s['min']))} "
             f"{_color_val('', _mbs(up_s['avg']))} "
             f"{_color_val('', _mbs(up_s['max']))}"
@@ -370,7 +353,7 @@ def show_report(config):
     # 🌡️ WiFi temp:   30°C          40°C          47°C
     if config.wifi and sysstat_core.get_count("wifi") > 0:
         wifi_s = sysstat_core.get_stats("wifi")
-        buffer.append(f"{wifi_icon}{f'WiFi signal:':<{COL_LABEL}}"
+        buffer.append(f"{wifi_signal_icon}{f'WiFi signal:':<{COL_LABEL}}"
             f"{_color_val(_color('wifi', wifi_s['min']), _pct(wifi_s['min']))} "
             f"{_color_val(_color('wifi', wifi_s['avg']), _pct(round(wifi_s['avg'])))} "
             f"{_color_val(_color('wifi', wifi_s['max']), _pct(wifi_s['max']))}"
@@ -384,14 +367,14 @@ def show_report(config):
         )
 
         down_s = sysstat_core.get_stats("wifi_down")
-        buffer.append(f"{wifi_d}{f'WiFi down:':<{COL_LABEL}}"
+        buffer.append(f"{wifi_down_icon}{f'WiFi down:':<{COL_LABEL}}"
             f"{_color_val('', _mbs(down_s['min']))} "
             f"{_color_val('', _mbs(down_s['avg']))} "
             f"{_color_val('', _mbs(down_s['max']))}"
         )
 
         up_s = sysstat_core.get_stats("wifi_up")
-        buffer.append(f"{wifi_u}{f'WiFi up:':<{COL_LABEL}}"
+        buffer.append(f"{wifi_up_icon}{f'WiFi up:':<{COL_LABEL}}"
             f"{_color_val('', _mbs(up_s['min']))} "
             f"{_color_val('', _mbs(up_s['avg']))} "
             f"{_color_val('', _mbs(up_s['max']))}"
@@ -400,11 +383,22 @@ def show_report(config):
         if sysstat_core.get_count("wifi_temp") > 0:
             wtemp_s   = sysstat_core.get_stats("wifi_temp")
             wtemp_avg = round(wtemp_s["avg"])
-            buffer.append(f"{therm_w}{f'WiFi temp:':<{COL_LABEL}}"
+            buffer.append(f"{wifi_temp_icon}{f'WiFi temp:':<{COL_LABEL}}"
                 f"{_color_val(_color('wifi_temp', wtemp_s['min']), _temp(wtemp_s['min']))} "
                 f"{_color_val(_color('wifi_temp', wtemp_avg),      _temp(wtemp_avg))} "
                 f"{_color_val(_color('wifi_temp', wtemp_s['max']), _temp(wtemp_s['max']))}"
             )
+
+    # ── Battery ───────────────────────────────────────────────
+    # 🔋 Battery:     15%           54%           100%
+    if config.bat and sysstat_core.get_count("bat") > 0:
+        bat_s   = sysstat_core.get_stats("bat")
+        bat_avg = round(bat_s["avg"])
+        buffer.append(f"{bat_icon}{f'Battery:':<{COL_LABEL}}"
+            f"{_color_val(_color('bat', bat_s['min']), _pct(bat_s['min']))} "
+            f"{_color_val(_color('bat', bat_avg),      _pct(bat_avg))} "
+            f"{_color_val(_color('bat', bat_s['max']), _pct(bat_s['max']))}"
+        )
 
     # ── Se imprime todo el informe junto, ya armado en el buffer ──
     print("\n".join(buffer))
@@ -412,8 +406,8 @@ def show_report(config):
     # ── Barra de acciones finales — Salir / Guardar TXT / Guardar LOG / Guardar PDF ─────
     # Para habilitar la opcion "(P) Save PDF" instalar la libreria fpdf2: "pip install fpdf2 --break-system-packages"
     # 🚪 (Q/X) Exit | 📝 (T) Save TXT | 📜 (L) Save LOG | 📄 (P) Save PDF
-    pdf_hint = f" | {icon_pdf}(P) Save PDF" if _PDF_AVAILABLE else ""
-    bar_text = f"{icon_bar}{REVERSE}{DIM}{icon_exit}(Q/X) Exit | {icon_txt}(T) Save TXT | {icon_log}(L) Save LOG{pdf_hint}{RESET}"
+    pdf_hint = f" | {save_pdf_icon}(P) Save PDF" if _PDF_AVAILABLE else ""
+    bar_text = f"{icon_bar}{REVERSE}{DIM}{exit_icon}(Q/X) Exit | {save_txt_icon}(T) Save TXT | {save_log_icon}(L) Save LOG{pdf_hint}{RESET}"
     sys.stdout.write(bar_text)
     sys.stdout.flush()
     _wait_final_keypress(buffer, config.icon)
@@ -429,7 +423,8 @@ def show_report(config):
 # =============================================================
 
 def _wait_final_keypress(buffer, icon_mode: bool):
-    """Espera Q/X (salir), T (guardar TXT) o L (guardar LOG) o P (guarda PDF). Tras guardar, sale directo."""
+    """Espera Q/X (salir), T (guardar TXT) o L (guardar LOG) o P (guarda PDF). Tras guardar, sale directo.
+    S guarda los TRES formatos juntos — tecla oculta, uso interno (ej: generar muestra para GitHub)."""
     import tty
     import termios
     fd           = sys.stdin.fileno()
@@ -437,23 +432,34 @@ def _wait_final_keypress(buffer, icon_mode: bool):
     try:
         tty.setcbreak(fd)
         while True:
-            rlist, _, _ = select.select([sys.stdin], [], [], 0.5)
-            if not rlist:
+            ready_fds, _, _ = select.select([sys.stdin], [], [], 0.5)
+            if not ready_fds:
                 continue
-            key = sys.stdin.read(1).lower()
-            if key in ("q", "x"):
+            key_pressed = sys.stdin.read(1).lower()
+            if key_pressed in ("q", "x"):
                 break
-            elif key == "t":
+            elif key_pressed == "t":
                 saved_path = _save_file(buffer, "txt", strip_colors=True)
                 sys.stdout.write(f"\nView: cat {saved_path}")
                 break
-            elif key == "l":
+            elif key_pressed == "l":
                 saved_path = _save_file(buffer, "log", strip_colors=False)
                 sys.stdout.write(f"\nView: cat {saved_path}")
                 break
-            elif key == "p" and _PDF_AVAILABLE:
+            elif key_pressed == "p" and _PDF_AVAILABLE:
                 saved_path = _save_pdf(buffer, icon_mode)
                 sys.stdout.write(f"\nView: xdg-open {saved_path}" if saved_path else "\nError: no se pudo generar el PDF")
+                break
+            elif key_pressed == "d":
+                txt_path = _save_file(buffer, "txt", strip_colors=True)
+                log_path = _save_file(buffer, "log", strip_colors=False)
+                pdf_path = _save_pdf(buffer, icon_mode) if _PDF_AVAILABLE else None
+                db_path  = _save_db_dump()
+                _show_db_dump()
+                sys.stdout.write(f"\nView: cat {txt_path}")
+                sys.stdout.write(f"\nView: cat {log_path}")
+                sys.stdout.write(f"\nView: xdg-open {pdf_path}" if pdf_path else "\nAviso: PDF no generado (fpdf2 no instalado)")
+                sys.stdout.write(f"\nView: cat {db_path}")                
                 break
     finally:
         termios.tcsetattr(fd, termios.TCSADRAIN, old_settings)
@@ -545,6 +551,22 @@ def _save_pdf(buffer, icon_mode: bool):
 
 def _show_db_dump():
     print()
-    print(f"{BOLD}=== _stats_db (volcado completo) ==={RESET}")
+    print(f"┌──────────────────────────────┐")
+    print(f"│ {BOLD}_stats_db (volcado completo){RESET} │")
+    print(f"└──────────────────────────────┘")
+    print()
     print(json.dumps(sysstat_core._stats_db, indent=2, default=str))
     print()
+
+def _save_db_dump():
+    """Guarda el volcado completo de _stats_db en un archivo TXT en REPORTS_DIR.
+    Excepción consciente a la regla 6 — solo se usa en el flujo de debug (tecla D)."""
+    try:
+        os.makedirs(REPORTS_DIR, exist_ok=True)
+        timestamp = sysstat_core.get_start_timestamp()
+        filepath  = os.path.join(REPORTS_DIR, f"stats_db_{timestamp}.txt")
+        with open(filepath, "w", encoding="utf-8") as f:
+            f.write(json.dumps(sysstat_core._stats_db, indent=2, default=str) + "\n")
+        return filepath
+    except Exception:
+        return None

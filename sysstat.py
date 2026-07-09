@@ -12,7 +12,7 @@
 # sysstat.py - ORQUESTADOR PRINCIPAL, PARSEADOR
 # =============================================
 #
-# Version: 015
+# Version: 020
 #
 # =============================================
 
@@ -20,16 +20,17 @@ import sys
 import os
 import argparse
 
-sys.dont_write_bytecode = True  # Evita __pycache__. Sacar esta línea si algún día se compila para version estable.
+sys.dont_write_bytecode = True  # Evita __pycache__. Sacar esta línea si algún día se quiere la precompilacion bytecode.
 
 # Convención estándar de Python para la versión del programa
-__version__ = "5.43.0.20260624a"
+__version__ = "5.46.0.20260708e Starship"
 
 # MODIFICADORES DE TEXTO ANSI (Para la estructura de la ayuda)
 RESET     = "\033[0m"
 BOLD      = "\033[1m"
 DIM       = "\033[2m"
 ITALIC    = "\033[3m" if os.environ.get("TERM", "") not in ("linux", "dumb") else "\033[2m"
+REVERSE   = "\033[7m"
 UNDERLINE = "\033[4m"
 RED       = "\033[31m"
 YELLOW    = "\033[33m"
@@ -82,7 +83,7 @@ def parse_arguments():
         description=f"{BOLD}SysStat CLI/GUI{RESET} (System Status) - Version {__version__}\n\n"
                     f"{BOLD}Repositorio:{RESET} {UNDERLINE}https://github.com/LiGNUxMan/SysStat{RESET}\n\n"
                     f"{BOLD}Autor:{RESET} Axel O'BRIEN ({ITALIC}LiGNUxMan{RESET}) · {UNDERLINE}axelobrien@gmail.com{RESET}\n"
-                    f"{BOLD}Colaboradores:{RESET} OpenIA ChatGPT / Google - Antigravity & Gemini / Anthropic Claude\n\n"
+                    f"{BOLD}Colaboradores:{RESET} ChatGPT (OpenAI) · Gemini/Antigravity (Google) · Claude (Anthropic)\n\n"
                     f"{BOLD}Uso:{RESET} ./sysstat.py [intervalo] [-ciclos] [opciones]\n"
                     f"     Durante la ejecución, puede presionar {BOLD}Q{RESET} o {BOLD}X{RESET} para salir.\n\n"
                     f"{BOLD}Parámetros de bucle:{RESET}\n"
@@ -95,23 +96,26 @@ def parse_arguments():
                f"  ./sysstat.py 60         → Ejecuta cada 60 segundos\n"
                f"  ./sysstat.py -r -w      → Ejecuta una sola vez, omitiendo RAM y WiFi\n"
                f"  ./sysstat.py -s -b 10   → Ejecuta cada 10s, omit. datos del sist. y barras\n"
-               f"  ./sysstat.py -g 15 -100 → Ejecuta 100 veces en modo GUI, cada 15s\n\n"
-               f"  ./sysstat.py -s -o -u -p -l -a -t 60\n"
-               f"  CPU used: {BOLD}2%{RESET} ({ITALIC}CPU0:{RESET} {BOLD}1%{RESET} - {ITALIC}CPU1:{RESET} {BOLD}4%{RESET} - {ITALIC}CPU2:{RESET} {BOLD}1%{RESET} - {ITALIC}CPU3:{RESET} {BOLD}2%{RESET})\n"
-               f"  ░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░\n"
-               f"  CPU frequency: {BOLD}{YELLOW}0.90GHz{RESET} ({ITALIC}CPU0,2,3) - Scaling governor: {BOLD}powersave{RESET}\n"
-               f"  {YELLOW}█████████░░░░░░░░░░░░░░░░░░░░░░░{RESET}\n"
+               f"  ./sysstat.py -g -100 15 → Ejecuta 100 veces en modo GUI, cada 15s\n\n"
+               f"  ./sysstat.py -s -o -u -p -l 60\n"
+               f"  CPU used: {BOLD}13%{RESET} ({ITALIC}0:{RESET} {BOLD}12%{RESET} - {ITALIC}1:{RESET} {BOLD}12%{RESET} - {ITALIC}2:{RESET} {BOLD}8%{RESET} - {ITALIC}3:{RESET} {BOLD}21%{RESET})\n"
+               f"  ████░░░░░░░░░░░░░░░░░░░░░░░░░░░░░\n"
+               f"  CPU frequency: {BOLD}{YELLOW}1.20GHz{RESET} ({ITALIC}0,2,3{RESET}) - Scaling governor: {BOLD}powersave{RESET}\n"
+               f"  {YELLOW}████████████{RESET}░░░░░░░░░░░░░░░░░░░░░\n"
                f"  CPU temperature: {BOLD}35°C{RESET}\n"
-               f"  RAM used: {BOLD}53%{RESET} ({BOLD}8.16GB/15.49GB{RESET}) - Swap used: 0% ({BOLD}0.00GB/0.00GB{RESET})\n"
-               f"  ████████████████▒▒▒▒▒▒▒▒▒▒░░░░░░ - ░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░\n"
-               f"  Disk used: {BOLD}49%{RESET} ({BOLD}229.43GB/467.91GB{RESET}) - Read: {BOLD}0.00MB/s{RESET} - Write: {BOLD}0.00MB/s{RESET}\n"
-               f"  ███████████████░░░░░░░░░░░░░░░░\n"
+               f"  RAM used: {BOLD}43%{RESET} ({BOLD}6.64GB/15.49GB{RESET}) - Swap used: {BOLD}0%{RESET} ({BOLD}0.00GB/0.00GB{RESET})\n"
+               f"  ██████████████▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒░░ - ░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░\n"
+               f"  Disk used: {BOLD}52%{RESET} ({BOLD}242.59GB/467.91GB{RESET}) - R: {BOLD}0.00MB/s{RESET} - W: {BOLD}0.17MB/s{RESET}\n"
+               f"  █████████████████░░░░░░░░░░░░░░░░\n"
                f"  Disk temperature: {BOLD}32°C{RESET}\n"
+               f"  LAN IP: {BOLD}192.168.0.117{RESET} - Spd: {BOLD}1Gb/s(F){RESET} - D: {BOLD}0.53MB/s{RESET} - U: {BOLD}0.01MB/s{RESET}\n"
                f"  WiFi IP: {BOLD}192.168.0.208{RESET} - SSID: {BOLD}OBRIEN 5{RESET}\n"
-               f"  WiFi signal: {BOLD}{YELLOW}58%{RESET} - Speed: {BOLD}234.0Mb/s{RESET} - Down: {BOLD}0.00MB/s{RESET} - Up: {BOLD}0.00MB/s{RESET}\n"
-               f"  {YELLOW}██████████████████░░░░░░░░░░░░░░{RESET}\n"
+               f"  WiFi signal: {BOLD}{YELLOW}56%{RESET} - Spd: {BOLD}234.00Mb/s{RESET} - D: {BOLD}0.01MB/s{RESET} - U: {BOLD}0.00MB/s{RESET}\n"
+               f"  {YELLOW}██████████████████{RESET}░░░░░░░░░░░░░░░\n"
                f"  WiFi temperature: {BOLD}40°C{RESET}\n"
-               f"  {DIM}Run: 1 day, 13:24:20 (53ms) | Cycles: 564 | 16.31MB | Next: 10/60s {RESET}",
+               f"  Battery: {BOLD}98%{RESET} - Time: {BOLD}5h 3m{RESET} - Mode: {BOLD}Discharging{RESET}\n"
+               f"  ████████████████████████████████░\n"
+               f"  {DIM}{REVERSE}Run: 1 day, 13:24:20 (150ms) | Cycles: 564 | 16.12MB | Next: 10/60s{RESET}",
         formatter_class=CustomHelpFormatter,
         add_help=False
     )
@@ -131,7 +135,7 @@ def parse_arguments():
     parser.add_argument("-d", "-disk", action="store_true", dest="disk", help="Omite uso y temperatura del disco")
     parser.add_argument("-a", "-lan", action="store_true", dest="lan",  help="Omite red cableada (LAN)")
     parser.add_argument("-w", "-wifi", action="store_true", dest="wifi", help="Omite red inalambrica y temperatura (WiFi)")
-    parser.add_argument("-t", "-bat", action="store_true", dest="bat",  help="Omite batería (no disponible aún)")
+    parser.add_argument("-t", "-bat", action="store_true", dest="bat",  help="Omite batería")
     parser.add_argument("-b", "-bar", action="store_true", dest="bar",  help="Omite todas las barras de progreso")
     parser.add_argument("-bc", "-barc", action="store_true", dest="barc", help="Omite la barra de uso de CPU")
     parser.add_argument("-bf", "-barf", action="store_true", dest="barf", help="Omite la barra de frecuencia del CPU")

@@ -15,7 +15,7 @@
 # Si uso "print" aca lo estoy haciendo mal!
 # =====================================================================
 #
-# Version: 023
+# Version: 038
 #
 # =====================================================================
 
@@ -105,10 +105,10 @@ def get_metric_color(key: str, value: float) -> str:
         return RED                         # 🔴 (>= 65°C) ¡On Fire! Peligro para los datos
 
     elif key == "wifi":
-        if value >= 60.0: return RESET      # ⚪ OK: Blanco/Limpio (De 60% para arriba la conexión vuela)
-        if value >= 40.0: return YELLOW     # 🟡 Warning: Señal media, perfectamente operativa pero bajo monitoreo
-        if value >= 20.0: return ORANGE     # 🟠 High: Señal muy débil, la velocidad se desploma drásticamente
-        return RED                          # 🔴 Critical: Desconexión inminente, pérdida masiva de paquetes
+        if value >= 60.0: return RESET     # ⚪ OK: Blanco/Limpio (De 60% para arriba la conexión vuela)
+        if value >= 40.0: return YELLOW    # 🟡 Warning: Señal media, perfectamente operativa pero bajo monitoreo
+        if value >= 20.0: return ORANGE    # 🟠 High: Señal muy débil, la velocidad se desploma drásticamente
+        return RED                         # 🔴 Critical: Desconexión inminente, pérdida masiva de paquetes
 
     elif key == "wifi_temp":
         if value < 50.0:  return RESET     # ⚪ (< 50°C) Normal
@@ -117,14 +117,15 @@ def get_metric_color(key: str, value: float) -> str:
         return RED                         # 🔴 (>= 70°C) ¡Fiebre!
 
     elif key == "bat":
-        if value <= 15.0: return RED       # 🔴 Critical: ¡Aviso de ACPI / Suspensión inminente!
-        if value <= 30.0: return ORANGE    # 🟠 High: Modo ahorro estricto, hora de buscar el cargador
-        if value <= 50.0: return YELLOW    # 🟡 Warning: Pasamos la mitad de la autonomía
-        return RESET                       # ⚪ OK: Blanco / Limpio                      
+        if value > 50.0:   return RESET    # ⚪ OK: Blanco / Limpio — Más de la mitad de carga
+        elif value > 30.0: return YELLOW   # 🟡 Warning: Pasamos la mitad de la autonomía
+        elif value > 15.0: return ORANGE   # 🟠 High: Modo ahorro estricto
+        return RED                         # 🔴 Critical: ¡Aviso de ACPI / Suspensión inminente!
+               
     return RESET
 
 # =============================================================
-# _stats_db — ÚNICA FUENTE DE VERDAD
+# _stats_db — ÚNICIA FUENTE DE VERDAD
 # =============================================================
 # Estructura por tipo de dato:
 #
@@ -201,12 +202,12 @@ def sys_init():
 
     try:
         with open("/etc/os-release", "r") as f:
-            data = {}
+            os_release_data = {}
             for line in f:
                 if "=" in line:
-                    k, v = line.strip().split("=", 1)
-                    data[k] = v.strip('"')
-            os_name = data.get("PRETTY_NAME", "Unknown")
+                    key, value = line.strip().split("=", 1)
+                    os_release_data[key] = value.strip('"')
+            os_name = os_release_data.get("PRETTY_NAME", "Unknown")
     except Exception:
         try:
             os_name = platform.system()
@@ -249,7 +250,7 @@ def host_update():
     pass
 
 # =============================================================
-# UPTIME — tiempo de actividad y fecha/hora
+# UPTIME — tiempo de actividad y hora/fecha
 # 🕒 Uptime: 1d 12:56:33 - 📅 Time and date: 22:36:40 10/06/26
 # =============================================================
 def uptime_init():
@@ -291,10 +292,10 @@ def uptime_update():
 
 # =============================================================
 # CPU — uso, frecuencia, temperatura
-# 🎛️ CPU used: 12% (CPU0: 12% - CPU1: 12% - CPU2: 12% - CPU3: 13%)
-# ███░░░░░░░░░░░░░░░░░░░░░░░░░░░░░
+# 🔲 CPU used: 12% (CPU0: 12% - CPU1: 12% - CPU2: 12% - CPU3: 13%)
+#    ███░░░░░░░░░░░░░░░░░░░░░░░░░░░░░
 # ⚡ CPU frequency: 0.80GHz - 🎚️ Scaling governor: powersave
-# ████████░░░░░░░░░░░░░░░░░░░░░░░░
+#    ████████░░░░░░░░░░░░░░░░░░░░░░░░
 # 🌡️ CPU temperature: 36°C
 # =============================================================
 def cpu_init():
@@ -329,17 +330,17 @@ def cpu_init():
     # cpu_core_N — registro aquí, donde corresponde: el CPU ya está en la PC,
     # los cores no cambian en runtime. Una sola lectura, nunca más.
     num_cores = len(psutil.cpu_times(percpu=True))
-    for i in range(num_cores):
-        _db_register_stat(f"cpu_core_{i}")
+    for core_index in range(num_cores):
+        _db_register_stat(f"cpu_core_{core_index}")
 
     # Detección de paths de frecuencia — de todos los cores, no solo cpu0
     cpu_sys_path = "/sys/devices/system/cpu"
     first_freq_path = None
     if os.path.isdir(cpu_sys_path):
-        for cpu in sorted(os.listdir(cpu_sys_path)):
-            if not cpu.startswith("cpu") or not cpu[3:].isdigit():
+        for cpu_dir_name in sorted(os.listdir(cpu_sys_path)):
+            if not cpu_dir_name.startswith("cpu") or not cpu_dir_name[3:].isdigit():
                 continue
-            freq_path = os.path.join(cpu_sys_path, cpu, "cpufreq")
+            freq_path = os.path.join(cpu_sys_path, cpu_dir_name, "cpufreq")
             if os.path.isdir(freq_path):
                 cur_path = os.path.join(freq_path, "scaling_cur_freq")
                 if os.path.exists(cur_path):
@@ -388,8 +389,8 @@ def cpu_update():
         for prev, now in zip(_cpu_times_prev, cpu_times_now):
             total_diff = sum(now) - sum(prev)
             idle_diff  = now.idle - prev.idle
-            u = 100.0 * (1 - idle_diff / total_diff) if total_diff else 0.0
-            core_usage.append(round(max(0.0, min(100.0, u))))
+            usage_pct  = 100.0 * (1 - idle_diff / total_diff) if total_diff else 0.0
+            core_usage.append(round(max(0.0, min(100.0, usage_pct))))
         _cpu_times_prev = cpu_times_now
         _cpu_time_prev  = time.time()
         avg = sum(core_usage) / len(core_usage) if core_usage else 0.0
@@ -400,22 +401,22 @@ def cpu_update():
             "color": get_metric_color("cpu", avg),
         })
         # Acumula min/avg/max por core individual — claves ya registradas en cpu_init()
-        for i, usage in enumerate(core_usage):
-            _db_accumulate(f"cpu_core_{i}", usage)
-            _db_set(f"cpu_core_{i}", {"pct": usage, "color": get_metric_color("cpu", usage)})
+        for core_index, usage in enumerate(core_usage):
+            _db_accumulate(f"cpu_core_{core_index}", usage)
+            _db_set(f"cpu_core_{core_index}", {"pct": usage, "color": get_metric_color("cpu", usage)})
     except Exception:
         _db_set("cpu", {"avg": 0, "cores": [], "color": RESET})
 
     # ── Frecuencia — todos los cores leídos de una sola vez ──
     if _cpu_freq_cur_paths:
         try:
-            hw      = get("cpu_freq") or {}
-            max_hz  = hw.get("max_hz", 0)
+            cpu_freq_hw = get("cpu_freq") or {}
+            max_hz      = cpu_freq_hw.get("max_hz", 0)
             # Lee TODOS los cores en una sola pasada — sin condición de carrera
             cores_hz = []
-            for p in _cpu_freq_cur_paths:
+            for freq_path in _cpu_freq_cur_paths:
                 try:
-                    with open(p) as f: cores_hz.append(int(f.read().strip()))
+                    with open(freq_path) as f: cores_hz.append(int(f.read().strip()))
                 except Exception:
                     cores_hz.append(0)
             cur_hz       = max(cores_hz) if cores_hz else 0
@@ -428,7 +429,7 @@ def cpu_update():
             _db_set("cpu_freq_hz", {
                 "hz":          cur_hz,
                 "cores_hz":    cores_hz,       # ← Hz de cada core — misma lectura, sin carrera
-                "cores_at_max": cores_at_max,  # ← cores dentro del margen de 10KHz del máximo
+                "cores_at_max": cores_at_max,  # ← cores dentro del margen de 5KHz del máximo
                 "governor":    governor,
             })
             _db_accumulate("cpu_freq_pct", pct_capped)
@@ -444,38 +445,52 @@ def cpu_update():
         try:
             temps = psutil.sensors_temperatures()
             if _cpu_temp_sensor in temps:
-                t = temps[_cpu_temp_sensor][_cpu_temp_index].current
-                _db_accumulate("cpu_temp", float(round(t)))
-                _db_set("cpu_temp", {"temp": int(round(t)), "color": get_metric_color("cpu_temp", t)})
+                temp_value = temps[_cpu_temp_sensor][_cpu_temp_index].current
+                _db_accumulate("cpu_temp", float(round(temp_value)))
+                _db_set("cpu_temp", {"temp": int(round(temp_value)), "color": get_metric_color("cpu_temp", temp_value)})
         except Exception:
             pass
 
 # =============================================================
 # RAM / SWAP — uso de memoria
 # 📟 RAM used: 53% (8.16GB / 15.49GB) - 💾 Swap used: 0% (0.00GB / 0.00GB)
-# ████████████████▒▒▒▒▒▒▒▒▒▒░░░░░░ - ░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░
+#    ████████████████▒▒▒▒▒▒▒▒▒▒░░░░░░ - ░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░
 # =============================================================
 def ram_init():
-    """Registra las claves RAM y Swap en la DB — % y KB para mam de ambos."""
+    """Registra las claves RAM y Swap en la DB — % y KB para mam de ambos.
+    MemTotal es estático (no cambia en runtime) — se lee una sola vez acá."""
+    _db_register_static("ram_hw")
     _db_register_stat("ram")
     _db_register_stat("ram_kb")
     _db_register_stat("swap")
     _db_register_stat("swap_kb")
 
-def ram_update():
-    """Lee /proc/meminfo y escribe RAM y Swap en la DB."""
+    mem_total = 0
     try:
         with open("/proc/meminfo") as f:
-            valores = {}
+            for line in f:
+                if line.startswith("MemTotal:"):
+                    mem_total = int(line.split()[1])
+                    break
+    except Exception:
+        pass
+    _db_set("ram_hw", {"total_kb": mem_total})
+
+def ram_update():
+    """Lee /proc/meminfo y escribe RAM y Swap en la DB. SwapTotal se relee cada
+    ciclo porque, a diferencia de MemTotal, puede cambiar en runtime (swapon/swapoff)."""
+    try:
+        with open("/proc/meminfo") as f:
+            meminfo_values = {}
             for line in f:
                 parts = line.split()
                 if len(parts) >= 2:
-                    valores[parts[0].rstrip(":")] = int(parts[1])
+                    meminfo_values[parts[0].rstrip(":")] = int(parts[1])
 
         # RAM — valores en KB, se convierten a GB para guardar
-        mem_total     = valores["MemTotal"]
-        mem_available = valores["MemAvailable"]
-        mem_free      = valores["MemFree"]
+        mem_total     = get("ram_hw")["total_kb"]
+        mem_available = meminfo_values["MemAvailable"]
+        mem_free      = meminfo_values["MemFree"]
         mem_used      = mem_total - mem_available
         mem_pct       = (mem_used / mem_total) * 100 if mem_total > 0 else 0.0
         apps_ratio    = mem_used / mem_total if mem_total > 0 else 0.0
@@ -486,15 +501,14 @@ def ram_update():
         _db_set("ram", {
             "pct":        round(mem_pct),
             "used_kb":    mem_used,
-            "total_kb":   mem_total,
             "apps_ratio": apps_ratio,
             "free_ratio": free_ratio,
             "color":      get_metric_color("ram", mem_pct),
         })
 
         # Swap
-        swap_total = valores.get("SwapTotal", 0)
-        swap_free  = valores.get("SwapFree",  0)
+        swap_total = meminfo_values.get("SwapTotal", 0)
+        swap_free  = meminfo_values.get("SwapFree",  0)
         swap_used  = swap_total - swap_free
         swap_pct   = (swap_used / swap_total) * 100 if swap_total > 0 else 0.0
 
@@ -589,11 +603,13 @@ def load_update():
 # =============================================================
 # DISK — uso, velocidad I/O y temperatura
 # 🗄️ Disk used: 55% (258.92GB/467.91GB) - 📥 R: 0.00MB/s - 📤 W: 0.17MB/s
-# █████████████████░░░░░░░░░░░░░░░
+#    █████████████████░░░░░░░░░░░░░░░
 # 🌡️ Disk temperature: 33°C
 # =============================================================
 def disk_init():
-    """Detecta sensor de temperatura NVMe. Primera lectura de I/O para el delta."""
+    """Detecta sensor de temperatura del disco — NVMe o, si no hay, SATA/SSD/SCSI
+    via drivetemp (módulo de kernel, requiere 'sudo modprobe drivetemp' si no
+    carga solo). Primera lectura de I/O para el delta."""
     global _disk_temp_sensor, _disk_temp_label
     global _disk_io_prev, _disk_io_time_prev
 
@@ -610,12 +626,15 @@ def disk_init():
 
     try:
         temps = psutil.sensors_temperatures()
-        if "nvme" in temps:
-            for entry in temps["nvme"]:
-                if entry.current is not None:
-                    _disk_temp_sensor = "nvme"
-                    _disk_temp_label  = entry.label
-                    break
+        for sensor_name in ("nvme", "drivetemp"):
+            if sensor_name in temps:
+                for entry in temps[sensor_name]:
+                    if entry.current is not None:
+                        _disk_temp_sensor = sensor_name
+                        _disk_temp_label  = entry.label
+                        break
+            if _disk_temp_sensor:
+                break
     except Exception:
         pass
 
@@ -631,9 +650,9 @@ def disk_update():
 
     # ── Uso de disco — punto de montaje fijo "/" ──────────────
     try:
-        st       = os.statvfs("/")
-        total_kb = st.f_blocks * st.f_frsize / 1024
-        used_kb  = (st.f_blocks - st.f_bfree) * st.f_frsize / 1024
+        disk_stat = os.statvfs("/")
+        total_kb  = disk_stat.f_blocks * disk_stat.f_frsize / 1024
+        used_kb   = (disk_stat.f_blocks - disk_stat.f_bfree) * disk_stat.f_frsize / 1024
         used_pct = (used_kb / total_kb) * 100 if total_kb > 0 else 0.0
 
         # ── Velocidad I/O — delta de bytes / delta de tiempo ──
@@ -673,23 +692,23 @@ def disk_update():
         try:
             temps   = psutil.sensors_temperatures()
             entries = temps.get(_disk_temp_sensor, [])
-            t = None
+            temp_value = None
             if _disk_temp_label:
                 for entry in entries:
                     if entry.label == _disk_temp_label:
-                        t = entry.current
+                        temp_value = entry.current
                         break
             elif entries:
-                t = entries[0].current
-            if t is not None:
-                _db_accumulate("disk_temp", float(round(t)))
-                _db_set("disk_temp", {"temp": int(round(t)), "color": get_metric_color("disk_temp", t)})
+                temp_value = entries[0].current
+            if temp_value is not None:
+                _db_accumulate("disk_temp", float(round(temp_value)))
+                _db_set("disk_temp", {"temp": int(round(temp_value)), "color": get_metric_color("disk_temp", temp_value)})
         except Exception:
             pass
 
 # =============================================================
 # LAN — IP, velocidad, duplex e I/O (placa cableada)
-# 🌐 LAN IP: 192.168.0.117 - Speed: 100Mb/s(F) - ⬇️ D: 0.00MB/s - ⬆️ U: 0.00MB/s
+# 🖧 LAN IP: 192.168.0.117 - Speed: 100Mb/s(F) - ⬇️ D: 0.00MB/s - ⬆️ U: 0.00MB/s
 # =============================================================
 # Se busca en CADA ciclo (no en lan_init) por la misma razón que WiFi:
 # puede ser USB y conectarse/desconectarse en caliente. Solo se muestra
@@ -713,8 +732,8 @@ def _lan_find_iface():
     try:
         stats = psutil.net_if_stats()
         addrs = psutil.net_if_addrs()
-        for name, stat in stats.items():
-            if name == "lo" or not stat.isup:
+        for name, if_stat in stats.items():
+            if name == "lo" or not if_stat.isup:
                 continue
             if os.path.isdir(f"/sys/class/net/{name}/wireless"):
                 continue
@@ -742,9 +761,9 @@ def lan_update():
         addrs = psutil.net_if_addrs()
         ip    = next((a.address for a in addrs.get(iface, []) if a.family == socket.AF_INET), "N/A")
 
-        stat   = psutil.net_if_stats().get(iface)
-        speed  = stat.speed if stat else 0
-        duplex = "F" if stat and stat.duplex == 2 else "H"
+        if_stat = psutil.net_if_stats().get(iface)
+        speed   = if_stat.speed if if_stat else 0
+        duplex  = "F" if if_stat and if_stat.duplex == 2 else "H"
 
         down, up = 0.0, 0.0
         io_now   = psutil.net_io_counters(pernic=True).get(iface)
@@ -763,9 +782,10 @@ def lan_update():
         _db_set("lan", None)
 
 # =============================================================
-# 🗼 WIFI — IP, SSID, señal, velocidad, I/O y temperatura
-# 📶 WiFi IP: 192.168.0.208 - SSID: OBRIEN 5
-# 📡 WiFi signal: 54% - Speed: 117.00Mb/s - ⬇️ D: 0.01MB/s - ⬆️ U: 0.00MB/s
+# WIFI — IP, SSID, señal, velocidad, I/O y temperatura
+# 🗼 WiFi IP: 192.168.0.208 - SSID: OBRIEN 5
+# 📶 WiFi signal: 56% - Spd: 117.00Mb/s - ⬇️  D: 0.01MB/s - ⬆️  U: 0.00MB/s
+#    ██████████████████░░░░░░░░░░░░░░░
 # 🌡️ WiFi temperature: 43°C
 # =============================================================
 # La placa se busca en CADA ciclo (no en wifi_init) porque puede ser
@@ -791,8 +811,8 @@ def _wifi_find_iface():
     try:
         stats = psutil.net_if_stats()
         addrs = psutil.net_if_addrs()
-        for name, stat in stats.items():
-            if name == "lo" or not stat.isup:
+        for name, if_stat in stats.items():
+            if name == "lo" or not if_stat.isup:
                 continue
             if not os.path.isdir(f"/sys/class/net/{name}/wireless"):
                 continue
@@ -882,6 +902,82 @@ def wifi_update():
         _db_set("wifi", None)
 
 # =============================================================
+# 🔋 BATTERY — porcentaje, tiempo restante y estado
+# 🔋 Battery: 86% - Time: 3h 45m - Mode: Discharging
+# =============================================================
+# Path detectado UNA SOLA VEZ en bat_init() — la batería no aparece/desaparece
+# en caliente como LAN/WiFi, así que no hace falta re-buscar en cada ciclo.
+# =============================================================
+def bat_init():
+    """Detecta el path sysfs de la batería principal. Sin 'scope' → se asume System (caso típico)."""
+    global _bat_path
+    _bat_path = None
+    _db_register_stat("bat")
+
+    power_supply_path = "/sys/class/power_supply"
+    if os.path.isdir(power_supply_path):
+        for device_name in os.listdir(power_supply_path):
+            device_path = os.path.join(power_supply_path, device_name)
+            try:
+                with open(os.path.join(device_path, "type")) as f:
+                    if f.read().strip() != "Battery": continue
+                try:
+                    with open(os.path.join(device_path, "scope")) as f:
+                        if f.read().strip() != "System": continue
+                except FileNotFoundError:
+                    pass  # Sin 'scope' → batería principal (caso común, no es un dispositivo periférico)
+                _bat_path = device_path
+                break
+            except FileNotFoundError:
+                continue
+
+def bat_update():
+    """Lee capacity/status de sysfs. El % se acumula SIEMPRE (para min/avg/max del
+    informe final) — pero el 'value' (línea en vivo del CLI) solo se expone si está
+    Charging/Discharging. Full/Not charging/etc. es ruido en el loop, igual que LAN/WiFi
+    sin conexión activa, pero no debe perderse del informe final."""
+    if not _bat_path:
+        return
+    try:
+        with open(os.path.join(_bat_path, "capacity")) as f:
+            percent = int(f.read().strip())
+        _db_accumulate("bat", percent)
+ 
+        with open(os.path.join(_bat_path, "status")) as f:
+            state = f.read().strip()
+
+        if state not in ("Charging", "Discharging"):
+            _db_set("bat", None)
+            return
+ 
+        time_str = ""
+        if state == "Discharging":
+            try:
+                try:
+                    with open(os.path.join(_bat_path, "energy_now")) as f: remaining = int(f.read().strip())
+                    with open(os.path.join(_bat_path, "power_now")) as f: rate = int(f.read().strip())
+                except FileNotFoundError:
+                    # Sin energy_now/power_now (µWh/µW) → esquema charge_now/current_now (µAh/µA)
+                    # La división da horas igual en ambos casos, no hace falta voltage_now.
+                    with open(os.path.join(_bat_path, "charge_now")) as f: remaining = int(f.read().strip())
+                    with open(os.path.join(_bat_path, "current_now")) as f: rate = int(f.read().strip())
+                if rate > 0:
+                    secs_left = int((remaining / rate) * 3600)
+                    h, m = divmod(secs_left // 60, 60)
+                    time_str = f"{h}h {m}m"
+            except Exception:
+                pass
+ 
+        _db_set("bat", {
+            "percent":  percent,
+            "state":    state,
+            "time_str": time_str,
+            "color":    get_metric_color("bat", percent),
+        })
+    except Exception:
+        pass
+
+# =============================================================
 # CONTROL DE BUCLE Y BARRA DE ESTADO
 # 🔁 Run: 00:36:15 (27ms) | Cycles: 216 | 15.27MB | Next: 9/10s
 # =============================================================
@@ -958,4 +1054,4 @@ def hardware_init(config):
     if config.disk: disk_init()
     if config.lan:  lan_init()
     if config.wifi: wifi_init()
-    # if config.bat:  bat_init()    ← próximamente
+    if config.bat:  bat_init()
