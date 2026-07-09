@@ -1,9 +1,9 @@
 ![Platform](https://img.shields.io/badge/Platform-Linux-lightgrey?style=flat-square&logo=linux)
 ![Python](https://img.shields.io/badge/Python-3.x-blue?style=flat-square)
 ![License](https://img.shields.io/badge/License-GPLv3-green?style=flat-square)
-![Version](https://img.shields.io/badge/Version-5.43.0.20260624a-orange?style=flat-square)
+![Version](https://img.shields.io/badge/Version-5.46.0.20260708e-orange?style=flat-square)
 
-# SysStat (System Status) CLI/GUI v5.43.0.20260624a
+# SysStat (System Status) CLI/GUI v5.46.0.20260708e "Starship"
 
 ![SysStat CLI](images/screenshot1.png)
 
@@ -13,7 +13,7 @@
 
 **SysStat** is a real-time system monitoring tool for Linux, written in pure Python. It evolved from the original single-file **SysStatCLI** into a clean **6-module architecture** that strictly separates data collection (core) from rendering (CLI view / GUI view).
 
-It reports CPU (usage, per-core, frequency, governor, temperature), RAM/Swap, process count, load average, disk usage/I-O/temperature, wired LAN, and WiFi (signal, speed, I-O, temperature) — all color-coded by severity, with optional progress bars and a final session report (min/avg/max) you can save to disk.
+It reports CPU (usage, per-core, frequency, governor, temperature), RAM/Swap, process count, load average, disk usage/I-O/temperature, wired LAN, WiFi (signal, speed, I-O, temperature), and battery — all color-coded by severity, with optional progress bars and a final session report (min/avg/max) you can save to disk.
 
 ### 🏗️ Architecture
 
@@ -39,11 +39,12 @@ Files communicate **only** through `sysstat_core`'s public API (`get()`, `get_st
 - **Uptime**: time since boot, start/current date and time.
 - **CPU**: total usage, per-core breakdown (`-cn` to collapse), frequency (GHz) with cores currently at max clock, scaling governor, temperature.
 - **RAM / Swap**: usage %, GB used/total, 3-segment bar (apps / cache+buffers / free) for RAM.
-- **Processes**: total processes, total threads, running, disk-sleep (blocked) and sleeping breakdown.
+- **Processes**: total processes, total threads (T), running (R), blocked/disk-sleep (D) and sleeping (S).
 - **Load average**: 1/5/15 min, colored against core count.
-- **Disk**: usage % and GB on `/`, read/write speed (MB/s), NVMe temperature.
-- **LAN**: IP, link speed, duplex, down/up throughput.
-- **WiFi**: IP, SSID, signal %, link speed, down/up throughput, adapter temperature.
+- **Disk**: usage % and GB on `/`, read/write speed (MB/s), NVMe and SSD temperature.
+- **LAN**: IP, link speed, duplex, down/up throughput. Hot-detected every cycle (works with USB adapters too).
+- **WiFi**: IP, SSID, signal %, link speed, down/up throughput, adapter temperature. Hot-detected every cycle.
+- **Battery**: percentage, remaining time while discharging, charging state.
 - **Progress bars**: independently toggleable per metric.
 - **Loop mode**: run every N seconds, indefinitely or for a fixed number of cycles (`-N`).
 - **Final report**: on exit, shows min/avg/max for every tracked metric; press **T** to save as `.txt` (clean), **L** to save as `.log` (with ANSI colors), or **P** to save as `.pdf` *(requires `fpdf2`, optional)*.
@@ -62,26 +63,28 @@ Color thresholds reacting to a real CPU/load spike — same script, same termina
 ![SysStat under load](images/screenshot2.png)
 
 ```
-🐧 OS: Linux Mint 22.3 - ⚙️ Kernel version: 6.14.0-37-generic
-🏠 Hostname: hal9001c - 👤 User: axel
-🕒 Uptime: 5d 23:49:26 - 📅 Time and date: 09:29:35 15/06/26
-🎛️ CPU used: 50% (CPU0: 49% - CPU1: 50% - CPU2: 50% - CPU3: 50%)
+🐧 OS: Linux Mint 22.3 - ⚙️ Kernel version: 7.0.0-14-generic
+💻 Hostname: hal9001c - 🧑 User: axel
+🕒 Uptime: 5d 23:49:26 - 📅 Time and date: 09:29:35 09/07/26
+🔳 CPU used: 50% (0: 49% - 1: 50% - 2: 50% - 3: 50%)
    ████████████████░░░░░░░░░░░░░░░░
-⚡ CPU frequency: 1.60GHz (CPU0,1,2,3) - 🎚️  Scaling governor: powersave
+🚀 CPU frequency: 1.60GHz (0,1,2,3) - 🎚️  Scaling governor: powersave
    ████████████████░░░░░░░░░░░░░░░░
 🌡️ CPU temperature: 39°C
-📟 RAM used: 49% (7.57GB/15.49GB) - 💾 Swap used: 0% (0.00GB/0.00GB)
+📟 RAM used: 49% (7.57GB/15.49GB) - 🔀 Swap used: 0% (0.00GB/0.00GB)
    ███████████████▒▒▒▒▒▒▒▒▒▒▒▒▒░░░░ - ░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░
-📋 Processes: 296 (run=1, sleep=230, idle=65, stop=0, zombie=0)
+📋 Processes: 296 (T: 1500 - R: 2 - D: 0 - S: 1451)
 📊 Load average: 1.25 1.10 1.05
 🗄️ Disk used: 55% (258.92GB/467.91GB) - 📥 R: 0.00MB/s - 📤 W: 0.17MB/s
    █████████████████░░░░░░░░░░░░░░░
 🌡️ Disk temperature: 33°C
-🌐 LAN IP: 192.168.0.117 - Spd: 100Mb/s(F) - ⬇️ D: 0.00MB/s - ⬆️ U: 0.00MB/s
+🖧 LAN IP: 192.168.0.117 - Spd: 100Mb/s(F) - ⬇️  D: 0.00MB/s - ⬆️  U: 0.00MB/s
 🗼 WiFi IP: 192.168.0.208 - SSID: OBRIEN 5
-📶 WiFi signal: 52% - Speed: 117.00Mb/s - ⬇️ D: 0.01MB/s - ⬆️ U: 0.00MB/s
+🛜 WiFi signal: 52% - Spd: 117.00Mb/s - ⬇️  D: 0.01MB/s - ⬆️  U: 0.00MB/s
    ████████████████░░░░░░░░░░░░░░░░
 🌡️ WiFi temperature: 45°C
+🔋 Battery: 86% - Time: 3h 45m - Mode: Discharging
+   ████████████████████████████░░░░
 🔁 Run: 01:08:56 (58ms) | Cycles: 411 | 18.55MB | Next: 4/10s
 ```
 
@@ -94,18 +97,18 @@ When the script exits, it prints a min/avg/max summary for the whole session and
 ![SysStat final report](images/screenshot3.png)
 
 ```
-SysStat CLI/GUI v5.43.0.20260622a
+SysStat CLI/GUI v5.46.0.20260708e Starship
 🐧 OS: Linux Mint 22.3 - ⚙️ Kernel version: 7.0.0-14-generic
-🏠 Hostname: hal9001c - 👤 User: axel
-🕒 Start: 22:02:43 21/06/26 - 📅 End: 19:40:38 22/06/26
+💻 Hostname: hal9001c - 🧑 User: axel
+🕒 Start: 22:02:43 08/07/26 - 📅 End: 19:40:38 09/07/26
 ⏱️ Runtime: 21:37:58 - 🔄 Cycles: 593
                 Min           Avg           Max
-🔲 CPU used:    1%            17%           85%
-⚡  CPU freq:    0.70GHz       1.20GHz       3.10GHz
+🔳 CPU used:    1%            17%           85%
+🚀 CPU freq:    0.70GHz       1.20GHz       3.10GHz
 🌡️ CPU temp:    28°C          35°C          64°C
 📟 RAM used:    34%           38%           44%
                 5.33GB        5.82GB        6.87GB
-💾 Swap used:   0%            0%            0%
+🔀 Swap used:   0%            0%            0%
                 0.00GB        0.00GB        0.00GB
 📋 Processes:   283           292           368
 📊 Load avg:    0.06          1.01          6.95
@@ -117,11 +120,12 @@ SysStat CLI/GUI v5.43.0.20260622a
 🖧 Lan speed:   100Mb/s       100.0Mb/s     100Mb/s
 ⬇️ Lan down:    0.00MB/s      0.03MB/s      1.09MB/s
 ⬆️ Lan up:      0.00MB/s      0.00MB/s      0.05MB/s
-📶 WiFi signal: 100%          100%          100%
+🛜 WiFi signal: 100%          100%          100%
    WiFi speed:  260.00Mb/s    427.52Mb/s    433.30Mb/s
 ⬇️ WiFi down:   0.00MB/s      0.11MB/s      5.64MB/s
 ⬆️ WiFi up:     0.00MB/s      0.00MB/s      0.06MB/s
 🌡️ WiFi temp:   29°C          36°C          41°C
+🔋 Battery:     54%           78%           100%
 ```
 
 **Sample reports:** [.txt](sysstat_reports/sysstat_20260617_202726.txt) · [.log](sysstat_reports/sysstat_20260617_202726.log) · [.pdf](sysstat_reports/sysstat_20260617_202726.pdf)
@@ -172,7 +176,7 @@ python3 sysstat.py [interval] [-cycles] [options]
 | Disk       | `-d`, `-disk`            | Skip disk usage/temperature           |
 | LAN        | `-a`, `-lan`             | Skip wired network                    |
 | WiFi       | `-w`, `-wifi`            | Skip WiFi                             |
-| Battery    | `-t`, `-bat`             | Skip battery *(not available yet)*    |
+| Battery    | `-t`, `-bat`             | Skip battery                          |
 | Bars       | `-b`, `-bar`             | Hide **all** progress bars            |
 |            | `-bc`, `-barc`           | Hide CPU usage bar                    |
 |            | `-bf`, `-barf`           | Hide CPU frequency bar                |
@@ -209,6 +213,7 @@ All thresholds live in **one place**: `get_metric_color()` in `sysstat_core.py`.
 | Disk temp       | < 45°C        | 45–54°C       | 55–64°C       | ≥ 65°C         |
 | WiFi signal     | ≥ 60%         | 40–59%        | 20–39%        | < 20%          |
 | WiFi temp       | < 50°C        | 50–59°C       | 60–69°C       | ≥ 70°C         |
+| Battery         | > 50%         | 30–50%        | 15–30%        | ≤ 15%          |
 
 If your hardware behaves differently, edit the values in that single function — no other file needs to change.
 
@@ -219,7 +224,6 @@ Improvements, fixes, and suggestions are welcome — open an issue or a pull req
 ### Roadmap
 
 - [ ] Port the full CustomTkinter GUI to the new modular architecture
-- [ ] Battery section in the modular CLI/GUI
 - [ ] Audible alert when a critical metric goes red
 - [ ] Graphing historical data from saved `.log` reports
 
@@ -243,7 +247,7 @@ Distributed under **GPLv3**. Use it, modify it, share it.
 
 **SysStat** es una herramienta de monitoreo del sistema en tiempo real para Linux, escrita en Python puro. Evolucionó desde el script único original **SysStatCLI** hacia una **arquitectura modular de 6 archivos** que separa estrictamente la recolección de datos (core) de la visualización (vista CLI / vista GUI).
 
-Reporta CPU (uso, por núcleo, frecuencia, governor, temperatura), RAM/Swap, procesos, carga del sistema, disco (uso/I-O/temperatura), LAN cableada y WiFi (señal, velocidad, I-O, temperatura) — todo coloreado por severidad, con barras de progreso opcionales y un informe final de sesión (min/avg/max) que se puede guardar en disco.
+Reporta CPU (uso, por núcleo, frecuencia, governor, temperatura), RAM/Swap, procesos, carga del sistema, disco (uso/I-O/temperatura), LAN cableada, WiFi (señal, velocidad, I-O, temperatura) y batería — todo coloreado por severidad, con barras de progreso opcionales y un informe final de sesión (min/avg/max) que se puede guardar en disco.
 
 ### 🏗️ Arquitectura
 
@@ -269,11 +273,12 @@ Los archivos se comunican **únicamente** a través de la API pública de `sysst
 - **Uptime**: tiempo desde el arranque, fecha/hora de inicio y actual.
 - **CPU**: uso total, detalle por núcleo (`-cn` para colapsarlo), frecuencia (GHz) con los núcleos que están al máximo, scaling governor, temperatura.
 - **RAM / Swap**: % de uso, GB usados/totales, barra de 3 segmentos (apps / caché+buffers / libre) para RAM.
-- **Procesos**: total de procesos, total de hilos, en ejecución, bloqueados (disk-sleep) y durmiendo.
+- **Procesos**: total de procesos, total de hilos (T), en ejecución (R), bloqueados (disk-sleep) (D) y durmiendo (S).
 - **Carga del sistema**: 1/5/15 min, coloreada según cantidad de núcleos.
-- **Disco**: % y GB usados en `/`, velocidad de lectura/escritura (MB/s), temperatura NVMe.
-- **LAN**: IP, velocidad de enlace, dúplex, throughput de bajada/subida.
-- **WiFi**: IP, SSID, % de señal, velocidad, throughput de bajada/subida, temperatura de la placa.
+- **Disco**: % y GB usados en `/`, velocidad de lectura/escritura (MB/s), temperatura NVMe y SSD.
+- **LAN**: IP, velocidad de enlace, dúplex, throughput de bajada/subida. Detección en caliente en cada ciclo (funciona también con adaptadores USB).
+- **WiFi**: IP, SSID, % de señal, velocidad, throughput de bajada/subida, temperatura de la placa. Detección en caliente en cada ciclo.
+- **Batería**: porcentaje, tiempo restante mientras descarga, estado de carga.
 - **Barras de progreso**: activables/desactivables de forma independiente por métrica.
 - **Modo bucle**: ejecuta cada N segundos, indefinidamente o por una cantidad fija de ciclos (`-N`).
 - **Informe final**: al salir, muestra min/avg/max de cada métrica registrada; presioná **T** para guardar como `.txt` (limpio), **L** para guardar como `.log` (con colores ANSI), o **P** para guardar como `.pdf` *(requiere `fpdf2`, opcional)*.
@@ -292,26 +297,28 @@ Los umbrales de color reaccionando a un pico real de CPU/carga — mismo script,
 ![SysStat bajo carga](images/screenshot2.png)
 
 ```
-🐧 OS: Linux Mint 22.3 - ⚙️ Kernel version: 6.14.0-37-generic
-🏠 Hostname: hal9001c - 👤 User: axel
-🕒 Uptime: 5d 23:49:26 - 📅 Time and date: 09:29:35 15/06/26
-🎛️ CPU used: 50% (CPU0: 49% - CPU1: 50% - CPU2: 50% - CPU3: 50%)
+🐧 OS: Linux Mint 22.3 - ⚙️ Kernel version: 7.0.0-14-generic
+💻 Hostname: hal9001c - 🧑 User: axel
+🕒 Uptime: 5d 23:49:26 - 📅 Time and date: 09:29:35 09/07/26
+🔳 CPU used: 50% (0: 49% - 1: 50% - 2: 50% - 3: 50%)
    ████████████████░░░░░░░░░░░░░░░░
-⚡ CPU frequency: 1.60GHz (CPU0,1,2,3) - 🎚️  Scaling governor: powersave
+🚀 CPU frequency: 1.60GHz (0,1,2,3) - 🎚️  Scaling governor: powersave
    ████████████████░░░░░░░░░░░░░░░░
 🌡️ CPU temperature: 39°C
-📟 RAM used: 49% (7.57GB/15.49GB) - 💾 Swap used: 0% (0.00GB/0.00GB)
+📟 RAM used: 49% (7.57GB/15.49GB) - 🔀 Swap used: 0% (0.00GB/0.00GB)
    ███████████████▒▒▒▒▒▒▒▒▒▒▒▒▒░░░░ - ░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░
-📋 Processes: 296 (run=1, sleep=230, idle=65, stop=0, zombie=0)
+📋 Processes: 296 (T: 1500 - R: 2 - D: 0 - S: 1451)
 📊 Load average: 1.25 1.10 1.05
 🗄️ Disk used: 55% (258.92GB/467.91GB) - 📥 R: 0.00MB/s - 📤 W: 0.17MB/s
    █████████████████░░░░░░░░░░░░░░░
 🌡️ Disk temperature: 33°C
-🌐 LAN IP: 192.168.0.117 - Spd: 100Mb/s(F) - ⬇️ D: 0.00MB/s - ⬆️ U: 0.00MB/s
+🖧 LAN IP: 192.168.0.117 - Spd: 100Mb/s(F) - ⬇️  D: 0.00MB/s - ⬆️  U: 0.00MB/s
 🗼 WiFi IP: 192.168.0.208 - SSID: OBRIEN 5
-📶 WiFi signal: 52% - Speed: 117.00Mb/s - ⬇️ D: 0.01MB/s - ⬆️ U: 0.00MB/s
+🛜 WiFi signal: 52% - Spd: 117.00Mb/s - ⬇️  D: 0.01MB/s - ⬆️  U: 0.00MB/s
    ████████████████░░░░░░░░░░░░░░░░
 🌡️ WiFi temperature: 45°C
+🔋 Battery: 86% - Time: 3h 45m - Mode: Discharging
+   ████████████████████████████░░░░
 🔁 Run: 01:08:56 (58ms) | Cycles: 411 | 18.55MB | Next: 4/10s
 ```
 
@@ -324,18 +331,18 @@ Al salir del script, imprime un resumen min/avg/max de toda la sesión y te deja
 ![SysStat informe final](images/screenshot3.png)
 
 ```
-SysStat CLI/GUI v5.43.0.20260622a
+SysStat CLI/GUI v5.46.0.20260708e Starship
 🐧 OS: Linux Mint 22.3 - ⚙️ Kernel version: 7.0.0-14-generic
-🏠 Hostname: hal9001c - 👤 User: axel
-🕒 Start: 22:02:43 21/06/26 - 📅 End: 19:40:38 22/06/26
+💻 Hostname: hal9001c - 🧑 User: axel
+🕒 Start: 22:02:43 08/07/26 - 📅 End: 19:40:38 09/07/26
 ⏱️ Runtime: 21:37:58 - 🔄 Cycles: 593
                 Min           Avg           Max
-🔲 CPU used:    1%            17%           85%
-⚡  CPU freq:    0.70GHz       1.20GHz       3.10GHz
+🔳 CPU used:    1%            17%           85%
+🚀 CPU freq:    0.70GHz       1.20GHz       3.10GHz
 🌡️ CPU temp:    28°C          35°C          64°C
 📟 RAM used:    34%           38%           44%
                 5.33GB        5.82GB        6.87GB
-💾 Swap used:   0%            0%            0%
+🔀 Swap used:   0%            0%            0%
                 0.00GB        0.00GB        0.00GB
 📋 Processes:   283           292           368
 📊 Load avg:    0.06          1.01          6.95
@@ -347,11 +354,12 @@ SysStat CLI/GUI v5.43.0.20260622a
 🖧 Lan speed:   100Mb/s       100.0Mb/s     100Mb/s
 ⬇️ Lan down:    0.00MB/s      0.03MB/s      1.09MB/s
 ⬆️ Lan up:      0.00MB/s      0.00MB/s      0.05MB/s
-📶 WiFi signal: 100%          100%          100%
+🛜 WiFi signal: 100%          100%          100%
    WiFi speed:  260.00Mb/s    427.52Mb/s    433.30Mb/s
 ⬇️ WiFi down:   0.00MB/s      0.11MB/s      5.64MB/s
 ⬆️ WiFi up:     0.00MB/s      0.00MB/s      0.06MB/s
 🌡️ WiFi temp:   29°C          36°C          41°C
+🔋 Battery:     54%           78%           100%
 ```
 
 **Informes de ejemplo:** [.txt](sysstat_reports/sysstat_20260617_202726.txt) · [.log](sysstat_reports/sysstat_20260617_202726.log) · [.pdf](sysstat_reports/sysstat_20260617_202726.pdf)
@@ -402,7 +410,7 @@ python3 sysstat.py [intervalo] [-ciclos] [opciones]
 | Disco      | `-d`, `-disk`            | Omite uso/temperatura del disco         |
 | LAN        | `-a`, `-lan`             | Omite red cableada                      |
 | WiFi       | `-w`, `-wifi`            | Omite WiFi                             |
-| Batería    | `-t`, `-bat`             | Omite batería *(no disponible aún)*     |
+| Batería    | `-t`, `-bat`             | Omite batería                          |
 | Barras     | `-b`, `-bar`             | Oculta **todas** las barras             |
 |            | `-bc`, `-barc`           | Oculta barra de uso de CPU              |
 |            | `-bf`, `-barf`           | Oculta barra de frecuencia de CPU       |
@@ -439,6 +447,7 @@ Todos los umbrales viven en **un solo lugar**: `get_metric_color()` en `sysstat_
 | Temp. disco         | < 45°C        | 45–54°C       | 55–64°C       | ≥ 65°C         |
 | Señal WiFi          | ≥ 60%         | 40–59%        | 20–39%        | < 20%          |
 | Temp. WiFi          | < 50°C        | 50–59°C       | 60–69°C       | ≥ 70°C         |
+| Batería             | > 50%         | 30–50%        | 15–30%        | ≤ 15%          |
 
 Si tu hardware se comporta distinto, editá los valores en esa única función — ningún otro archivo necesita cambiar.
 
@@ -449,7 +458,6 @@ Mejoras, correcciones o sugerencias son bienvenidas — abrí un issue o un pull
 ### Roadmap
 
 - [ ] Portar la GUI completa de CustomTkinter a la arquitectura modular
-- [ ] Sección de batería en el CLI/GUI modular
 - [ ] Alerta sonora cuando una métrica crítica esté en rojo
 - [ ] Gráficos históricos a partir de los `.log` guardados
 
