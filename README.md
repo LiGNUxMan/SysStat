@@ -1,9 +1,9 @@
 ![Platform](https://img.shields.io/badge/Platform-Linux-lightgrey?style=flat-square&logo=linux)
 ![Python](https://img.shields.io/badge/Python-3.x-blue?style=flat-square)
 ![License](https://img.shields.io/badge/License-GPLv3-green?style=flat-square)
-![Version](https://img.shields.io/badge/Version-5.46.0.20260708e-orange?style=flat-square)
+![Version](https://img.shields.io/badge/Version-5.46.1.20260710f-orange?style=flat-square)
 
-# SysStat (System Status) CLI/GUI v5.46.0.20260708e "Starship"
+# SysStat (System Status) CLI/GUI v5.46.1.20260710f "Beep"
 
 ![SysStat CLI](images/screenshot1.png)
 
@@ -36,7 +36,7 @@ Files communicate **only** through `sysstat_core`'s public API (`get()`, `get_st
 
 - **System info**: OS name and kernel version.
 - **Host**: hostname and current user.
-- **Uptime**: time since boot, current date and time.
+- **Uptime**: time since boot, start/current date and time.
 - **CPU**: total usage, per-core breakdown (`-cn` to collapse), frequency (GHz) with cores currently at max clock, scaling governor, temperature.
 - **RAM / Swap**: usage %, GB used/total, 3-segment bar (apps / cache+buffers / free) for RAM.
 - **Processes**: total processes, total threads (T), running (R), blocked/disk-sleep (D) and sleeping (S).
@@ -45,6 +45,7 @@ Files communicate **only** through `sysstat_core`'s public API (`get()`, `get_st
 - **LAN**: IP, link speed, duplex, down/up throughput. Hot-detected every cycle (works with USB adapters too).
 - **WiFi**: IP, SSID, signal %, link speed, down/up throughput, adapter temperature. Hot-detected every cycle.
 - **Battery**: percentage, remaining time while discharging, charging state.
+- **Audible alert**: a single beep per cycle when any metric transitions into red (edge-triggered — no repeat beeping while it stays red). Three-level fallback: `sox` → `beep` → ASCII bell. Disable with `-e`/`-beep`.
 - **Progress bars**: independently toggleable per metric.
 - **Loop mode**: run every N seconds, indefinitely or for a fixed number of cycles (`-N`).
 - **Final report**: on exit, shows min/avg/max for every tracked metric; press **T** to save as `.txt` (clean), **L** to save as `.log` (with ANSI colors), or **P** to save as `.pdf` *(requires `fpdf2`, optional)*.
@@ -68,7 +69,7 @@ Color thresholds reacting to a real CPU/load spike — same script, same termina
 🕒 Uptime: 5d 23:49:26 - 📅 Time and date: 09:29:35 09/07/26
 🔳 CPU used: 50% (0: 49% - 1: 50% - 2: 50% - 3: 50%)
    ████████████████░░░░░░░░░░░░░░░░
-🚀 CPU frequency: 1.60GHz (0,1,2,3) - 🎚️ Scaling governor: powersave
+🚀 CPU frequency: 1.60GHz (0,1,2,3) - 🎚️  Scaling governor: powersave
    ████████████████░░░░░░░░░░░░░░░░
 🌡️ CPU temperature: 39°C
 📟 RAM used: 49% (7.57GB/15.49GB) - 🔀 Swap used: 0% (0.00GB/0.00GB)
@@ -78,9 +79,9 @@ Color thresholds reacting to a real CPU/load spike — same script, same termina
 🗄️ Disk used: 55% (258.92GB/467.91GB) - 📥 R: 0.00MB/s - 📤 W: 0.17MB/s
    █████████████████░░░░░░░░░░░░░░░
 🌡️ Disk temperature: 33°C
-🖧 LAN IP: 192.168.0.117 - Spd: 100Mb/s(F) - ⬇️ D: 0.00MB/s - ⬆️ U: 0.00MB/s
+🖧 LAN IP: 192.168.0.117 - Spd: 100Mb/s(F) - ⬇️  D: 0.00MB/s - ⬆️  U: 0.00MB/s
 🗼 WiFi IP: 192.168.0.208 - SSID: OBRIEN 5
-🛜 WiFi signal: 52% - Spd: 117.00Mb/s - ⬇️ D: 0.01MB/s - ⬆️ U: 0.00MB/s
+🛜 WiFi signal: 52% - Spd: 117.00Mb/s - ⬇️  D: 0.01MB/s - ⬆️  U: 0.00MB/s
    ████████████████░░░░░░░░░░░░░░░░
 🌡️ WiFi temperature: 45°C
 🔋 Battery: 86% - Time: 3h 45m - Mode: Discharging
@@ -97,7 +98,7 @@ When the script exits, it prints a min/avg/max summary for the whole session and
 ![SysStat final report](images/screenshot3.png)
 
 ```
-SysStat CLI/GUI v5.46.0.20260708e Starship
+SysStat CLI/GUI v5.46.1.20260710f Beep
 🐧 OS: Linux Mint 22.3 - ⚙️ Kernel version: 7.0.0-14-generic
 💻 Hostname: hal9001c - 🧑 User: axel
 🕒 Start: 22:02:43 08/07/26 - 📅 End: 19:40:38 09/07/26
@@ -136,6 +137,7 @@ SysStat CLI/GUI v5.46.0.20260708e Starship
 - Python 3.x
 - Linux with `psutil`, `/proc`, `/sys` (standard on virtually any distro)
 - `iw` installed for WiFi SSID/signal detection
+- *(optional, for the audible alert)*: `sox` or `beep` — falls back to the ASCII terminal bell if neither is installed
 - *(GUI mode, in progress)*: `customtkinter`
 
 ```bash
@@ -185,6 +187,7 @@ python3 sysstat.py [interval] [-cycles] [options]
 |            | `-bw`, `-barw`           | Hide WiFi bar                         |
 |            | `-bt`, `-bart`           | Hide Battery bar                      |
 | Icons      | `-i`, `-icon`            | Hide decorative icons                 |
+| Beep       | `-e`, `-beep`            | Disable audible alert on new red metric |
 | GUI        | `-g`, `-gui`             | Start in graphical mode *(not available yet)* |
 | Help       | `-h`, `-help`, `--help`  | Show help and exit                    |
 
@@ -270,7 +273,7 @@ Los archivos se comunican **únicamente** a través de la API pública de `sysst
 
 - **Sistema**: nombre del SO y versión del kernel.
 - **Host**: hostname y usuario actual.
-- **Uptime**: tiempo desde el arranque, fecha/hora actual.
+- **Uptime**: tiempo desde el arranque, fecha/hora de inicio y actual.
 - **CPU**: uso total, detalle por núcleo (`-cn` para colapsarlo), frecuencia (GHz) con los núcleos que están al máximo, scaling governor, temperatura.
 - **RAM / Swap**: % de uso, GB usados/totales, barra de 3 segmentos (apps / caché+buffers / libre) para RAM.
 - **Procesos**: total de procesos, total de hilos (T), en ejecución (R), bloqueados (disk-sleep) (D) y durmiendo (S).
@@ -279,6 +282,7 @@ Los archivos se comunican **únicamente** a través de la API pública de `sysst
 - **LAN**: IP, velocidad de enlace, dúplex, throughput de bajada/subida. Detección en caliente en cada ciclo (funciona también con adaptadores USB).
 - **WiFi**: IP, SSID, % de señal, velocidad, throughput de bajada/subida, temperatura de la placa. Detección en caliente en cada ciclo.
 - **Batería**: porcentaje, tiempo restante mientras descarga, estado de carga.
+- **Alerta sonora**: un beep por ciclo cuando alguna métrica pasa a rojo (edge-triggered — no repite mientras se mantenga en rojo). Fallback de tres niveles: `sox` → `beep` → bell ASCII. Se desactiva con `-e`/`-beep`.
 - **Barras de progreso**: activables/desactivables de forma independiente por métrica.
 - **Modo bucle**: ejecuta cada N segundos, indefinidamente o por una cantidad fija de ciclos (`-N`).
 - **Informe final**: al salir, muestra min/avg/max de cada métrica registrada; presioná **T** para guardar como `.txt` (limpio), **L** para guardar como `.log` (con colores ANSI), o **P** para guardar como `.pdf` *(requiere `fpdf2`, opcional)*.
@@ -302,7 +306,7 @@ Los umbrales de color reaccionando a un pico real de CPU/carga — mismo script,
 🕒 Uptime: 5d 23:49:26 - 📅 Time and date: 09:29:35 09/07/26
 🔳 CPU used: 50% (0: 49% - 1: 50% - 2: 50% - 3: 50%)
    ████████████████░░░░░░░░░░░░░░░░
-🚀 CPU frequency: 1.60GHz (0,1,2,3) - 🎚️ Scaling governor: powersave
+🚀 CPU frequency: 1.60GHz (0,1,2,3) - 🎚️  Scaling governor: powersave
    ████████████████░░░░░░░░░░░░░░░░
 🌡️ CPU temperature: 39°C
 📟 RAM used: 49% (7.57GB/15.49GB) - 🔀 Swap used: 0% (0.00GB/0.00GB)
@@ -312,9 +316,9 @@ Los umbrales de color reaccionando a un pico real de CPU/carga — mismo script,
 🗄️ Disk used: 55% (258.92GB/467.91GB) - 📥 R: 0.00MB/s - 📤 W: 0.17MB/s
    █████████████████░░░░░░░░░░░░░░░
 🌡️ Disk temperature: 33°C
-🖧 LAN IP: 192.168.0.117 - Spd: 100Mb/s(F) - ⬇️ D: 0.00MB/s - ⬆️ U: 0.00MB/s
+🖧 LAN IP: 192.168.0.117 - Spd: 100Mb/s(F) - ⬇️  D: 0.00MB/s - ⬆️  U: 0.00MB/s
 🗼 WiFi IP: 192.168.0.208 - SSID: OBRIEN 5
-🛜 WiFi signal: 52% - Spd: 117.00Mb/s - ⬇️ D: 0.01MB/s - ⬆️ U: 0.00MB/s
+🛜 WiFi signal: 52% - Spd: 117.00Mb/s - ⬇️  D: 0.01MB/s - ⬆️  U: 0.00MB/s
    ████████████████░░░░░░░░░░░░░░░░
 🌡️ WiFi temperature: 45°C
 🔋 Battery: 86% - Time: 3h 45m - Mode: Discharging
@@ -331,7 +335,7 @@ Al salir del script, imprime un resumen min/avg/max de toda la sesión y te deja
 ![SysStat informe final](images/screenshot3.png)
 
 ```
-SysStat CLI/GUI v5.46.0.20260708e Starship
+SysStat CLI/GUI v5.46.1.20260710f Beep
 🐧 OS: Linux Mint 22.3 - ⚙️ Kernel version: 7.0.0-14-generic
 💻 Hostname: hal9001c - 🧑 User: axel
 🕒 Start: 22:02:43 08/07/26 - 📅 End: 19:40:38 09/07/26
@@ -370,6 +374,7 @@ SysStat CLI/GUI v5.46.0.20260708e Starship
 - Python 3.x
 - Linux con `psutil`, `/proc`, `/sys` (estándar en prácticamente cualquier distro)
 - `iw` instalado para detectar SSID/señal de WiFi
+- *(opcional, para la alerta sonora)*: `sox` o `beep` — si ninguno está instalado, usa el bell ASCII de la terminal
 - *(modo GUI, en desarrollo)*: `customtkinter`
 
 ```bash
@@ -419,6 +424,7 @@ python3 sysstat.py [intervalo] [-ciclos] [opciones]
 |            | `-bw`, `-barw`           | Oculta barra de WiFi                    |
 |            | `-bt`, `-bart`           | Oculta barra de Batería                 |
 | Íconos     | `-i`, `-icon`            | Oculta íconos decorativos               |
+| Beep       | `-e`, `-beep`            | Desactiva la alerta sonora ante nuevo rojo |
 | GUI        | `-g`, `-gui`             | Arranca en modo gráfico *(no disponible aún)* |
 | Ayuda      | `-h`, `-help`, `--help`  | Muestra la ayuda y sale                 |
 

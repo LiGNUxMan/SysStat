@@ -10,12 +10,13 @@
 # sysstat_cli.py - INTERFAZ DEL USUARIO CLI
 # =========================================
 #
-# Version: 032
+# Version: 035
 #
 # =============================================
 
 import os
 import select
+import subprocess
 import sys
 import sysstat_core
 import time
@@ -44,6 +45,35 @@ def build_bar_ram(ram: dict, width: int = 33) -> str:
 def format_speed(mbps: int) -> str:
     """Convierte Mb/s a Gb/s si supera 1000, para ahorrar espacio."""
     return f"{mbps / 1000:g}Gb/s" if mbps >= 1000 else f"{mbps}Mb/s"
+
+def play_beep():
+    """Alerta sonora ante una nueva métrica en rojo. Cadena de 3 niveles, cada uno
+    cae al siguiente SOLO si el comando no está instalado (FileNotFoundError):
+      1. sox ('play')  → método principal, confirmado funcional en HW real
+      2. beep          → alternativa via pcspkr/evdev si no hay sox
+      3. bell ASCII    → último recurso nativo, sin dependencias externas
+    Nota: esto NO detecta un comando instalado que falla en silencio (ej. sox sin
+    placa de sonido) — Popen no bloqueante no permite chequear eso sin trabar el loop.
+    Para habilitar el nivel 1 instalar sox: "sudo apt install sox".
+    Para habilitar el nivel 2 instalar beep: "sudo apt install beep"."""
+    try:
+        subprocess.Popen(
+            ["play", "-q", "-n", "synth", "0.1", "sin", "880", "vol", "0.2"],
+            stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL
+        )
+        return
+    except FileNotFoundError:
+        pass
+    try:
+        subprocess.Popen(
+            ["beep", "-f", "880", "-l", "100"],
+            stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL
+        )
+        return
+    except FileNotFoundError:
+        pass
+    sys.stdout.write("\a")
+    sys.stdout.flush()
 
 def check_unicode_support(config) -> bool:
     """Verifica si el entorno soporta Unicode.
@@ -175,6 +205,9 @@ def start_cli(config):
 
     if is_looping:
         loop_icon = "🔁 " if config.icon else ""
+
+    # Rojos del ciclo anterior — para detectar SOLO transiciones a rojo (no repetir beep)
+    prev_red_keys = set()
 
     # ── Configuración del terminal para modo bucle ───────────────────────────
     if is_looping:
@@ -366,6 +399,35 @@ def start_cli(config):
                     output_lines.append(f"{bat_icon}Battery: {bat_data['color']}{BOLD}{bat_data['percent']}%{RESET}{time_part} - Mode: {BOLD}{bat_data['state']}{RESET}")
                     if config.bar and config.bart:
                         output_lines.append(f"{bat_bar_indent}{build_bar(bat_data['percent'], 'bat')}")
+
+            # =============================================================
+            # BEEP — alerta sonora ante nuevas métricas en rojo
+            # Un solo beep por ciclo, sin importar cuántas métricas entraron en rojo juntas.
+            # Si ya estaba en rojo el ciclo anterior, no vuelve a sonar.
+            # =============================================================
+            if config.beep:
+                current_red_keys = set()
+                if config.cpu:
+                    if cpu_data['color'] == sysstat_core.RED: current_red_keys.add('cpu')
+                    if cpu_freq_pct['color'] == sysstat_core.RED: current_red_keys.add('cpu_freq')
+                    if cpu_temp_data and cpu_temp_data['color'] == sysstat_core.RED: current_red_keys.add('cpu_temp')
+                if config.ram:
+                    if ram_data['color'] == sysstat_core.RED: current_red_keys.add('ram')
+                    if swap_data['color'] == sysstat_core.RED: current_red_keys.add('swap')
+                if config.load:
+                    if load_data['color1'] == sysstat_core.RED: current_red_keys.add('load')
+                if config.disk:
+                    if disk_data['color'] == sysstat_core.RED: current_red_keys.add('disk')
+                    if disk_temp_data and disk_temp_data['color'] == sysstat_core.RED: current_red_keys.add('disk_temp')
+                if config.wifi and wifi_data:
+                    if wifi_data['color'] == sysstat_core.RED: current_red_keys.add('wifi')
+                    if wifi_temp_data and wifi_temp_data['color'] == sysstat_core.RED: current_red_keys.add('wifi_temp')
+                if config.bat and bat_data:
+                    if bat_data['color'] == sysstat_core.RED: current_red_keys.add('bat')
+
+                if current_red_keys - prev_red_keys:
+                    play_beep()
+                prev_red_keys = current_red_keys
 
             # ── Volcado único a pantalla — anti-parpadeo ──────────────────
             # \033[H mueve el cursor a home (NO borra, evita el flash negro).

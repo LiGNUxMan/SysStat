@@ -10,7 +10,7 @@
 # sysstat_cli_info.py - INFORME FINAL CLI
 # =======================================
 #
-# Version: 064
+# Version: 065
 #
 # =======================================
 
@@ -19,6 +19,7 @@ import json
 import os
 import re
 import select
+import subprocess
 import sys
 import sysstat_core
 from sysstat import __version__
@@ -68,6 +69,33 @@ _PDF_BLACK = (0, 0, 0)
 # =============================================================
 # 1.0 — HELPERS DE FORMATO Y ENTORNO
 # =============================================================
+
+def _play_beep():
+    """Aviso sonoro al terminar el informe final — señal de que el script paró y
+    espera una tecla (Q/X/T/L/P). Cadena de 3 niveles, cada uno cae al siguiente
+    SOLO si el comando no está instalado (FileNotFoundError):
+      1. sox ('play')  → método principal, confirmado funcional en HW real
+      2. beep          → alternativa via pcspkr/evdev si no hay sox
+      3. bell ASCII    → último recurso nativo, sin dependencias externas
+    Copia propia de sysstat_cli.play_beep() — regla 9: sin helpers compartidos."""
+    try:
+        subprocess.Popen(
+            ["play", "-q", "-n", "synth", "0.1", "sin", "880", "vol", "0.2"],
+            stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL
+        )
+        return
+    except FileNotFoundError:
+        pass
+    try:
+        subprocess.Popen(
+            ["beep", "-f", "880", "-l", "100"],
+            stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL
+        )
+        return
+    except FileNotFoundError:
+        pass
+    sys.stdout.write("\a")
+    sys.stdout.flush()
 
 def _color(key, value):
     return sysstat_core.get_metric_color(key, value)
@@ -399,6 +427,10 @@ def show_report(config):
             f"{_color_val(_color('bat', bat_avg),      _pct(bat_avg))} "
             f"{_color_val(_color('bat', bat_s['max']), _pct(bat_s['max']))}"
         )
+
+    # ── Aviso sonoro: el script terminó y espera una tecla ────────
+    if config.beep:
+        _play_beep()
 
     # ── Se imprime todo el informe junto, ya armado en el buffer ──
     print("\n".join(buffer))

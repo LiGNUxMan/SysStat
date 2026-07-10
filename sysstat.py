@@ -12,7 +12,7 @@
 # sysstat.py - ORQUESTADOR PRINCIPAL, PARSEADOR
 # =============================================
 #
-# Version: 020
+# Version: 022
 #
 # =============================================
 
@@ -23,7 +23,7 @@ import argparse
 sys.dont_write_bytecode = True  # Evita __pycache__. Sacar esta línea si algún día se quiere la precompilacion bytecode.
 
 # Convención estándar de Python para la versión del programa
-__version__ = "5.46.0.20260708e Starship"
+__version__ = "5.46.1.20260710f Beep"
 
 # MODIFICADORES DE TEXTO ANSI (Para la estructura de la ayuda)
 RESET     = "\033[0m"
@@ -61,6 +61,7 @@ class SysStatConfig:
         self.bart = True      # Barra Batería (-bt lo apaga)
 
         self.icon = True      # Íconos decorativos (-i lo apaga)
+        self.beep = True      # Alerta sonora ante nuevo rojo (-e lo apaga)
 
         # Interfaz
         self.cli = True       # Modo CLI (-g lo apaga (activa GUI))
@@ -144,6 +145,7 @@ def parse_arguments():
     parser.add_argument("-bw", "-barw", action="store_true", dest="barw", help="Omite la barra de señal WiFi")
     parser.add_argument("-bt", "-bart", action="store_true", dest="bart", help="Omite la barra de Batería")
     parser.add_argument("-i", "-icon", action="store_true", dest="icon", help="Oculta los íconos decorativos")
+    parser.add_argument("-e", "-beep", action="store_true", dest="beep", help="Omite la alerta sonora (beep) ante nuevos valores en rojo")
     parser.add_argument("-g", "-gui", action="store_true", dest="gui", help="Arranca en modo interfaz gráfica (GUI) (no disponible aún)")
 
     return parser.parse_args()
@@ -157,7 +159,7 @@ def parse_args():
         "-s", "-sys", "-o", "-host", "-u", "-up", "-c", "-cpu", "-cn", "-cpun", "-r", "-ram",
         "-p", "-proc", "-l", "-load", "-d", "-disk", "-a", "-lan", "-w", "-wifi",
         "-t", "-bat", "-b", "-bar", "-bc", "-barc", "-bf", "-barf", "-br", "-barr",
-        "-bd", "-bard", "-bw", "-barw", "-bt", "-bart", "-i", "-icon", "-g", "-gui",
+        "-bd", "-bard", "-bw", "-barw", "-bt", "-bart", "-i", "-icon", "-e", "-beep", "-g", "-gui",
         "-h", "-help", "--help"
     }
     
@@ -188,6 +190,7 @@ def parse_args():
             elif arg in ["-bw", "-barw"]: config.barw = False
             elif arg in ["-bt", "-bart"]: config.bart = False
             elif arg in ["-i", "-icon"]:  config.icon = False
+            elif arg in ["-e", "-beep"]:  config.beep = False
 
             elif arg in ["-g", "-gui"]: config.cli = False
             
