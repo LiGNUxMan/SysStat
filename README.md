@@ -44,8 +44,8 @@ Files communicate **only** through `sysstat_core`'s public API (`get()`, `get_st
 - **Disk**: usage % and GB on `/`, read/write speed (MB/s), NVMe and SSD temperature.
 - **LAN**: IP, link speed, duplex, down/up throughput. Hot-detected every cycle (works with USB adapters too).
 - **WiFi**: IP, SSID, signal %, link speed, down/up throughput, adapter temperature. Hot-detected every cycle.
-- **Battery**: percentage, remaining time while discharging / charging, charging state.
-- **Audible alert**: a single beep per cycle when any metric transitions into red (edge-triggered — no repeat beeping while it stays red). Three-level fallback: `sox` → `beep` → ASCII bell. Disable with `-e`/`-beep`. When disabled, a 🔇 icon appears at the end of the live status bar as a visual reminder.
+- **Battery**: percentage, remaining time while discharging, charging state.
+- **Audible alert**: a single beep per cycle when any metric transitions into red (edge-triggered — no repeat beeping while it stays red). Three-level fallback: `sox` → `beep` → ASCII bell. Disable with `-e`/`-beep`.
 - **Progress bars**: independently toggleable per metric.
 - **Loop mode**: run every N seconds, indefinitely or for a fixed number of cycles (`-N`).
 - **Final report**: on exit, shows min/avg/max for every tracked metric; press **T** to save as `.txt` (clean), **L** to save as `.log` (with ANSI colors), or **P** to save as `.pdf` *(requires `fpdf2`, optional)*.
@@ -227,6 +227,7 @@ Improvements, fixes, and suggestions are welcome — open an issue or a pull req
 ### Roadmap
 
 - [ ] Port the full CustomTkinter GUI to the new modular architecture
+- [ ] Audible alert when a critical metric goes red
 - [ ] Graphing historical data from saved `.log` reports
 
 ### Author
@@ -280,8 +281,8 @@ Los archivos se comunican **únicamente** a través de la API pública de `sysst
 - **Disco**: % y GB usados en `/`, velocidad de lectura/escritura (MB/s), temperatura NVMe y SSD.
 - **LAN**: IP, velocidad de enlace, dúplex, throughput de bajada/subida. Detección en caliente en cada ciclo (funciona también con adaptadores USB).
 - **WiFi**: IP, SSID, % de señal, velocidad, throughput de bajada/subida, temperatura de la placa. Detección en caliente en cada ciclo.
-- **Batería**: porcentaje, tiempo restante mientras descarga / carga, estado de carga.
-- **Alerta sonora**: un beep por ciclo cuando alguna métrica pasa a rojo (edge-triggered — no repite mientras se mantenga en rojo). Fallback de tres niveles: `sox` → `beep` → bell ASCII. Se desactiva con `-e`/`-beep`. Al desactivarla, aparece un ícono 🔇 al final de la status bar en vivo como recordatorio visual.
+- **Batería**: porcentaje, tiempo restante mientras descarga, estado de carga.
+- **Alerta sonora**: un beep por ciclo cuando alguna métrica pasa a rojo (edge-triggered — no repite mientras se mantenga en rojo). Fallback de tres niveles: `sox` → `beep` → bell ASCII. Se desactiva con `-e`/`-beep`.
 - **Barras de progreso**: activables/desactivables de forma independiente por métrica.
 - **Modo bucle**: ejecuta cada N segundos, indefinidamente o por una cantidad fija de ciclos (`-N`).
 - **Informe final**: al salir, muestra min/avg/max de cada métrica registrada; presioná **T** para guardar como `.txt` (limpio), **L** para guardar como `.log` (con colores ANSI), o **P** para guardar como `.pdf` *(requiere `fpdf2`, opcional)*.
@@ -463,6 +464,7 @@ Mejoras, correcciones o sugerencias son bienvenidas — abrí un issue o un pull
 ### Roadmap
 
 - [ ] Portar la GUI completa de CustomTkinter a la arquitectura modular
+- [ ] Alerta sonora cuando una métrica crítica esté en rojo
 - [ ] Gráficos históricos a partir de los `.log` guardados
 
 ### Autor

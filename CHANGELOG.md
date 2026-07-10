@@ -2,6 +2,11 @@
 
 Todas las versiones notables de SysStat se documentan en este archivo.
 
+## [5.46.1.20260710g] "Beep" — 2026-07-10
+
+### Añadido
+- **Tiempo de carga**: Ahora la bateria tambien muestra el tiempo que falta cuando se esta cargando.
+
 ## [5.46.1.20260710f] "Beep" — 2026-07-10
 
 ### Añadido
@@ -9,7 +14,6 @@ Todas las versiones notables de SysStat se documentan en este archivo.
 - Un solo beep por ciclo, sin importar cuántas métricas entren en rojo juntas en el mismo ciclo.
 - Fallback de tres niveles en `play_beep()`: `sox` (`play`) → `beep` → bell ASCII (`\a`) — cae al siguiente nivel solo si el comando no está instalado.
 - Nueva flag `-e` / `-beep` para desactivar la alerta (sonido activo por defecto, como el resto de las flags de presentación).
-- Nuevo icono 🔇 en la status bar si se paso el flag `-e` / `-beep`
 
 ### Técnico
 - Set `prev_red_keys` en `sysstat_cli.py` para trackear qué métricas estaban en rojo en el ciclo anterior — comparación por diferencia de conjuntos (`current_red_keys - prev_red_keys`) para detectar solo entradas nuevas.
