@@ -45,7 +45,7 @@ Files communicate **only** through `sysstat_core`'s public API (`get()`, `get_st
 - **LAN**: IP, link speed, duplex, down/up throughput. Hot-detected every cycle (works with USB adapters too).
 - **WiFi**: IP, SSID, signal %, link speed, down/up throughput, adapter temperature. Hot-detected every cycle.
 - **Battery**: percentage, remaining time while discharging, charging state.
-- **Audible alert**: a single beep per cycle when any metric transitions into red (edge-triggered — no repeat beeping while it stays red). Three-level fallback: `sox` → `beep` → ASCII bell. Disable with `-e`/`-beep`.
+- **Audible alert**: a single beep per cycle when any metric transitions into red (edge-triggered — no repeat beeping while it stays red). Three-level fallback: `sox` → `beep` → ASCII bell. Disable with `-e`/`-beep`. When disabled, a 🔇 icon appears at the end of the live status bar as a visual reminder.
 - **Progress bars**: independently toggleable per metric.
 - **Loop mode**: run every N seconds, indefinitely or for a fixed number of cycles (`-N`).
 - **Final report**: on exit, shows min/avg/max for every tracked metric; press **T** to save as `.txt` (clean), **L** to save as `.log` (with ANSI colors), or **P** to save as `.pdf` *(requires `fpdf2`, optional)*.
@@ -281,7 +281,7 @@ Los archivos se comunican **únicamente** a través de la API pública de `sysst
 - **LAN**: IP, velocidad de enlace, dúplex, throughput de bajada/subida. Detección en caliente en cada ciclo (funciona también con adaptadores USB).
 - **WiFi**: IP, SSID, % de señal, velocidad, throughput de bajada/subida, temperatura de la placa. Detección en caliente en cada ciclo.
 - **Batería**: porcentaje, tiempo restante mientras descarga, estado de carga.
-- **Alerta sonora**: un beep por ciclo cuando alguna métrica pasa a rojo (edge-triggered — no repite mientras se mantenga en rojo). Fallback de tres niveles: `sox` → `beep` → bell ASCII. Se desactiva con `-e`/`-beep`.
+- **Alerta sonora**: un beep por ciclo cuando alguna métrica pasa a rojo (edge-triggered — no repite mientras se mantenga en rojo). Fallback de tres niveles: `sox` → `beep` → bell ASCII. Se desactiva con `-e`/`-beep`. Al desactivarla, aparece un ícono 🔇 al final de la status bar en vivo como recordatorio visual.
 - **Barras de progreso**: activables/desactivables de forma independiente por métrica.
 - **Modo bucle**: ejecuta cada N segundos, indefinidamente o por una cantidad fija de ciclos (`-N`).
 - **Informe final**: al salir, muestra min/avg/max de cada métrica registrada; presioná **T** para guardar como `.txt` (limpio), **L** para guardar como `.log` (con colores ANSI), o **P** para guardar como `.pdf` *(requiere `fpdf2`, opcional)*.
