@@ -10,7 +10,7 @@
 # sysstat_cli.py - INTERFAZ DEL USUARIO CLI
 # =========================================
 #
-# Version: 035
+# Version: 037
 #
 # =============================================
 
@@ -106,7 +106,7 @@ def check_unicode_support(config) -> bool:
 # CONTROL DE BUCLE Y BARRA DE ESTADO
 # 🔁 Run: 00:36:15 (27ms) | Cycles: 216 | 15.27MB | Next: 9/10s
 # =============================================================
-def draw_statusbar_and_wait(seconds, loop_icon, frozen_render_ms, cycle_counter, config) -> bool:
+def draw_statusbar_and_wait(seconds, loop_icon, mute_icon, frozen_render_ms, cycle_counter, config) -> bool:
     """Espera el intervalo redibujando la status bar una vez por segundo.
     Retorna True si el usuario pidió salir con Q o X."""
     import tty
@@ -122,7 +122,7 @@ def draw_statusbar_and_wait(seconds, loop_icon, frozen_render_ms, cycle_counter,
                 break
             # Redibuja la status bar una vez por segundo
             status_data = sysstat_core.get_status_data(cycle_counter, config.cycles, config.interval, elapsed)
-            status_line = f"{loop_icon}{DIM}{REVERSE}Run: {status_data['runtime_str']} ({frozen_render_ms}ms) | Cycles: {status_data['cycle_display']} | {status_data['mem_str']}{status_data['next_str']}{RESET}"
+            status_line = f"{loop_icon}{DIM}{REVERSE}Run: {status_data['runtime_str']} ({frozen_render_ms}ms) | Cycles: {status_data['cycle_display']} | {status_data['mem_str']}{status_data['next_str']}{mute_icon}{RESET}"
             sys.stdout.write(f"\r{status_line}\033[K")
             sys.stdout.flush()
             ready_fds, _, _ = select.select([sys.stdin], [], [], 1)
@@ -205,6 +205,7 @@ def start_cli(config):
 
     if is_looping:
         loop_icon = "🔁 " if config.icon else ""
+        mute_icon = " 🔇" if config.icon and not config.beep else ""
 
     # Rojos del ciclo anterior — para detectar SOLO transiciones a rojo (no repetir beep)
     prev_red_keys = set()
@@ -451,7 +452,7 @@ def start_cli(config):
             if not loop_active:
                 break
 
-            if draw_statusbar_and_wait(config.interval, loop_icon, frozen_render_ms, cycle_counter, config):
+            if draw_statusbar_and_wait(config.interval, loop_icon, mute_icon, frozen_render_ms, cycle_counter, config):
                 break
 
             if config.cycles is None:

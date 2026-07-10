@@ -15,7 +15,7 @@
 # Si uso "print" aca lo estoy haciendo mal!
 # =====================================================================
 #
-# Version: 038
+# Version: 039
 #
 # =====================================================================
 
@@ -963,6 +963,23 @@ def bat_update():
                     with open(os.path.join(_bat_path, "current_now")) as f: rate = int(f.read().strip())
                 if rate > 0:
                     secs_left = int((remaining / rate) * 3600)
+                    h, m = divmod(secs_left // 60, 60)
+                    time_str = f"{h}h {m}m"
+            except Exception:
+                pass
+        elif state == "Charging":
+            try:
+                try:
+                    with open(os.path.join(_bat_path, "energy_full")) as f: full = int(f.read().strip())
+                    with open(os.path.join(_bat_path, "energy_now")) as f: now = int(f.read().strip())
+                    with open(os.path.join(_bat_path, "power_now")) as f: rate = int(f.read().strip())
+                except FileNotFoundError:
+                    # Esquema charge_now/current_now (µAh/µA)
+                    with open(os.path.join(_bat_path, "charge_full")) as f: full = int(f.read().strip())
+                    with open(os.path.join(_bat_path, "charge_now")) as f: now = int(f.read().strip())
+                    with open(os.path.join(_bat_path, "current_now")) as f: rate = int(f.read().strip())
+                if rate > 0:
+                    secs_left = int(((full - now) / rate) * 3600)
                     h, m = divmod(secs_left // 60, 60)
                     time_str = f"{h}h {m}m"
             except Exception:
