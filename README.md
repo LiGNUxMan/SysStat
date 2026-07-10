@@ -280,7 +280,7 @@ Los archivos se comunican **únicamente** a través de la API pública de `sysst
 - **Disco**: % y GB usados en `/`, velocidad de lectura/escritura (MB/s), temperatura NVMe y SSD.
 - **LAN**: IP, velocidad de enlace, dúplex, throughput de bajada/subida. Detección en caliente en cada ciclo (funciona también con adaptadores USB).
 - **WiFi**: IP, SSID, % de señal, velocidad, throughput de bajada/subida, temperatura de la placa. Detección en caliente en cada ciclo.
-- **Batería**: porcentaje, tiempo restante mientras descarga / descarga, estado de carga.
+- **Batería**: porcentaje, tiempo restante mientras descarga / carga, estado de carga.
 - **Alerta sonora**: un beep por ciclo cuando alguna métrica pasa a rojo (edge-triggered — no repite mientras se mantenga en rojo). Fallback de tres niveles: `sox` → `beep` → bell ASCII. Se desactiva con `-e`/`-beep`. Al desactivarla, aparece un ícono 🔇 al final de la status bar en vivo como recordatorio visual.
 - **Barras de progreso**: activables/desactivables de forma independiente por métrica.
 - **Modo bucle**: ejecuta cada N segundos, indefinidamente o por una cantidad fija de ciclos (`-N`).
