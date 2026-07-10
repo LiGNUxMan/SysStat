@@ -227,7 +227,6 @@ Improvements, fixes, and suggestions are welcome — open an issue or a pull req
 ### Roadmap
 
 - [ ] Port the full CustomTkinter GUI to the new modular architecture
-- [ ] Audible alert when a critical metric goes red
 - [ ] Graphing historical data from saved `.log` reports
 
 ### Author
@@ -464,7 +463,6 @@ Mejoras, correcciones o sugerencias son bienvenidas — abrí un issue o un pull
 ### Roadmap
 
 - [ ] Portar la GUI completa de CustomTkinter a la arquitectura modular
-- [ ] Alerta sonora cuando una métrica crítica esté en rojo
 - [ ] Gráficos históricos a partir de los `.log` guardados
 
 ### Autor
